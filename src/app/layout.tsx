@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   description:
     "The self-service catalog and automated voucher fulfillment portal for the Microsoft Sandbox program.",
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/site-icon-512.webp",
+    shortcut: "/site-icon-512.webp",
+    apple: "/site-icon-512.webp",
   },
 };
 

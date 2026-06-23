@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { LABS } from "@/lib/labs";
 import { ThemeToggle } from "@/components/shell/ThemeToggle";
-import { BrandMark, BrandLockupWhite } from "@/components/Brand";
+import { BrandMark, BrandLockup } from "@/components/Brand";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -38,15 +38,15 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
       <div className="min-h-[calc(100vh-180px)]">{children}</div>
 
-      <footer className="deep mt-16">
-        <div className="wrap-wide relative z-10 flex flex-col items-center justify-between gap-5 py-10 text-center sm:flex-row sm:text-left">
+      <footer className="mt-16 border-t border-line bg-surface">
+        <div className="wrap-wide flex flex-col items-center justify-between gap-5 py-10 text-center sm:flex-row sm:text-left">
           <div className="flex flex-col items-center gap-3 sm:items-start">
-            <BrandLockupWhite height={30} />
-            <p className="text-[12.5px] text-white/55">
+            <BrandLockup height={30} />
+            <p className="text-[12.5px] text-mut">
               Microsoft Sandbox, powered by CloudLabs from Spektra Systems.
             </p>
           </div>
-          <p className="max-w-[340px] text-[12.5px] leading-relaxed text-white/55">
+          <p className="max-w-[340px] text-[12.5px] leading-relaxed text-faint">
             This catalog is for reference. Voucher requests are handled through the partner portal.
           </p>
         </div>

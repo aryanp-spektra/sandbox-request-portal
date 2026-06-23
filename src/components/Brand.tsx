@@ -3,7 +3,9 @@
    next/image config and avoids layout shift via explicit sizing. */
 
 export const LOGO_MARK = "/logo.png";
-export const LOGO_WHITE_FULL = "/CloudLabs-with-SS-white-Full-1024x346-1-768x260-1.png";
+export const LOGO_LIGHT_FULL = "/CloudLabs-Logo-Light.BXGBJjvO.png"; // dark text, for light bg
+export const LOGO_WHITE_FULL = "/CloudLabs-with-SS-white-Full-1024x346-1-768x260-1.png"; // white text, for dark bg
+export const SITE_ICON = "/site-icon-512.webp";
 
 /** The purple cloud mark. Works on light or dark surfaces. */
 export function BrandMark({
@@ -26,7 +28,7 @@ export function BrandMark({
   );
 }
 
-/** Full white CloudLabs + Spektra Systems lockup. For dark surfaces only. */
+/** Full white CloudLabs + Spektra Systems lockup. For always-dark surfaces. */
 export function BrandLockupWhite({
   className = "",
   height = 28,
@@ -42,5 +44,35 @@ export function BrandLockupWhite({
       className={`w-auto object-contain ${className}`}
       style={{ height }}
     />
+  );
+}
+
+/** Theme-aware full CloudLabs lockup: colored (dark text) on light, white on
+    dark. Use on surfaces whose background follows the light/dark theme. */
+export function BrandLockup({
+  className = "",
+  height = 28,
+}: {
+  className?: string;
+  height?: number;
+}) {
+  return (
+    <span className={`inline-flex items-center ${className}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={LOGO_LIGHT_FULL}
+        alt="CloudLabs by Spektra Systems"
+        className="block w-auto object-contain dark:hidden"
+        style={{ height }}
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={LOGO_WHITE_FULL}
+        alt=""
+        aria-hidden="true"
+        className="hidden w-auto object-contain dark:block"
+        style={{ height }}
+      />
+    </span>
   );
 }
