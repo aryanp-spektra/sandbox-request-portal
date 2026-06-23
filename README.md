@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Microsoft Sandbox Request Portal
 
-## Getting Started
+A premium portal for the **Microsoft Sandbox** program (powered by CloudLabs / Spektra Systems). It turns a manual, email-driven voucher process into a self-service experience, and gives customers a polished public catalog to browse.
 
-First, run the development server:
+> Status: beta / demo. Catalog and fulfillment data are seeded from the FY27 lab catalogue and served through a swappable data-provider layer, so live CloudLabs / Graph APIs can slot in later without UI changes.
+
+## Routes
+
+| Route | Audience | Purpose |
+| --- | --- | --- |
+| `/` | Partners | Landing page |
+| `/catalog`, `/catalog/[id]` | Requesters | Browse + request labs (instant vs held vs blocked rules engine) |
+| `/requests` | Requesters | Request history, live SLA countdowns, voucher wallet |
+| `/admin` | Sandbox team | Operations cockpit + **Lab Readiness Matrix** |
+| `/explore`, `/explore/[id]` | **Public / customers** | Read-only catalog: search, filter & group by level / workload / solution play, "what changed in Build 2026", Excel + PDF export |
+
+The app is split into two route groups: `(app)` (role-gated, with the partner nav) and `(public)` (the customer-facing catalog with its own chrome).
+
+## Tech
+
+- **Next.js 16** (App Router, Turbopack) + **React 19** + **TypeScript**
+- **Tailwind CSS v4** with a custom "Aurora" design system (Sora + Inter)
+- **framer-motion** (motion), **zustand** (client state), **lucide-react** (icons)
+- **SheetJS / xlsx** and **jsPDF + autotable** for catalog export
+
+## Data
+
+All 178 labs come from the FY27 catalogue, normalized into `src/data/labs.json` (with a generated "Last updated" stamp in `src/data/meta.json`) by `tools/build_seed.py`. The script reads the source `.xlsx` (kept outside this repo) and maps each lab's catalogue status onto the lifecycle state machine the portal uses.
+
+## Local development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Vercel auto-detects this as a Next.js app. No special configuration is required, just import the repo and deploy.
