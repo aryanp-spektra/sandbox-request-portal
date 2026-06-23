@@ -48,3 +48,7 @@ next-env.d.ts
 /*.xlsx
 /*.docx
 /*.pdf
+
+# CI deploy assembly artifacts
+/deploy/
+/release.zip
