@@ -8,13 +8,13 @@ A premium portal for the **Microsoft Sandbox** program (powered by CloudLabs / S
 
 | Route | Audience | Purpose |
 | --- | --- | --- |
-| `/` | Partners | Landing page |
+| `/`, `/labs/[id]` | **Public / customers** | The default homepage. Read-only catalog: search, popular-tech filters, filter & group by level / workload / solution play, "what changed in Build 2026", Excel + PDF export |
+| `/portal` | Partners | Partner portal landing (reached via the "Partner portal" button) |
 | `/catalog`, `/catalog/[id]` | Requesters | Browse + request labs (instant vs held vs blocked rules engine) |
 | `/requests` | Requesters | Request history, live SLA countdowns, voucher wallet |
 | `/admin` | Sandbox team | Operations cockpit + **Lab Readiness Matrix** |
-| `/explore`, `/explore/[id]` | **Public / customers** | Read-only catalog: search, filter & group by level / workload / solution play, "what changed in Build 2026", Excel + PDF export |
 
-The app is split into two route groups: `(app)` (role-gated, with the partner nav) and `(public)` (the customer-facing catalog with its own chrome).
+The app is split into two route groups: `(public)` (the customer-facing catalog homepage with its own chrome) and `(app)` (the partner portal with its nav). The catalog is the front door; the partner portal is one explicit click away.
 
 ## Tech
 

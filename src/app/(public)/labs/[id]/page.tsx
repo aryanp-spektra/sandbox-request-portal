@@ -36,7 +36,7 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
     <main>
       <div className="deep relative overflow-hidden">
         <div className="wrap-wide relative z-10 py-9">
-          <Link href="/explore" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 transition-colors hover:text-white">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 transition-colors hover:text-white">
             <ArrowLeft className="h-4 w-4" /> Back to catalog
           </Link>
 
@@ -104,7 +104,7 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
             <Section title={`More in ${lab.solutionArea}`}>
               <div className="space-y-2">
                 {related.map((r) => (
-                  <Link key={r.id} href={`/explore/${r.id}`} className="group flex items-center gap-3 rounded-[12px] border border-line bg-surface p-3 transition-all hover:border-[#cdd2e2] hover:shadow-soft">
+                  <Link key={r.id} href={`/labs/${r.id}`} className="group flex items-center gap-3 rounded-[12px] border border-line bg-surface p-3 transition-all hover:border-[#cdd2e2] hover:shadow-soft">
                     <span className="grid h-9 w-9 flex-none place-items-center rounded-lg text-white" style={{ background: `linear-gradient(135deg,${TYPE_META[r.type].accent},${TYPE_META[r.type].accent2})` }}>
                       <Boxes className="h-4 w-4" />
                     </span>

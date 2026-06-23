@@ -25,7 +25,7 @@ export function PublicLabCard({ lab, index = 0 }: { lab: Lab; index?: number }) 
       transition={{ duration: 0.32, delay: Math.min(index * 0.025, 0.25), ease: [0.22, 1, 0.36, 1] }}
     >
       <Link
-        href={`/explore/${lab.id}`}
+        href={`/labs/${lab.id}`}
         className="group relative flex h-full flex-col overflow-hidden rounded-[16px] border border-line bg-surface shadow-soft transition-all duration-200 hover:-translate-y-1 hover:border-transparent hover:shadow-[var(--shadow-lift)]"
       >
         <div className="h-1" style={{ background: `linear-gradient(90deg, ${meta.accent}, ${meta.accent2})` }} />

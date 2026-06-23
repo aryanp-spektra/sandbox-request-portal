@@ -2,20 +2,21 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { LABS } from "@/lib/labs";
 import { ThemeToggle } from "@/components/shell/ThemeToggle";
-import { BrandMark, BrandLockup } from "@/components/Brand";
+import { BrandLockup } from "@/components/Brand";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-line glass">
         <div className="wrap-wide flex h-16 items-center gap-4">
-          <Link href="/explore" className="flex items-center gap-2.5">
-            <BrandMark size={38} />
-            <span className="leading-tight">
-              <span className="block font-display text-[16px] font-extrabold tracking-tight text-ink">
+          <Link href="/" className="flex items-center gap-2.5" aria-label="Microsoft Sandbox Lab Catalog, home">
+            <BrandLockup height={30} />
+            <span className="hidden h-7 w-px bg-line sm:block" />
+            <span className="hidden leading-tight sm:block">
+              <span className="block font-display text-[14.5px] font-extrabold tracking-tight text-ink">
                 Microsoft Sandbox
               </span>
-              <span className="block text-[11.5px] font-medium text-faint">Lab Catalog, FY27</span>
+              <span className="block text-[11px] font-medium text-faint">Lab Catalog, FY27</span>
             </span>
           </Link>
 
@@ -27,7 +28,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           </span>
           <ThemeToggle />
           <Link
-            href="/"
+            href="/portal"
             className="inline-flex items-center gap-1.5 rounded-[10px] border border-line bg-surface px-3 py-2 text-[13px] font-semibold text-slate transition-colors hover:border-[#cdd2e2]"
           >
             Partner portal

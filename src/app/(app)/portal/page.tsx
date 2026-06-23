@@ -56,7 +56,7 @@ export default function Home() {
             </Button>
           </div>
 
-          <Link href="/explore" className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-cyan-200 transition-colors hover:text-cyan-100">
+          <Link href="/" className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-cyan-200 transition-colors hover:text-cyan-100">
             Open the public, read-only catalog to share with customers
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>

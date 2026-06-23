@@ -37,7 +37,7 @@ export function Nav() {
     <>
       <header className="sticky top-0 z-50 border-b border-line glass">
         <nav className="wrap flex h-16 items-center gap-6">
-          <Link href="/" className="flex items-center gap-2.5">
+          <Link href="/portal" className="flex items-center gap-2.5">
             <BrandMark size={36} />
             <span className="font-display text-[18px] font-extrabold tracking-tight text-ink">
               Sandbox<span className="aurora-text">.</span>
