@@ -5,22 +5,22 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Search, Command } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { usePortal } from "@/lib/store";
 import { CommandSearch } from "./CommandSearch";
-import { RoleSwitcher } from "./RoleSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
+import { UserMenu } from "./UserMenu";
 import { BrandMark } from "@/components/Brand";
+import type { SessionUser } from "@/lib/auth/types";
 
 const LINKS = [
-  { href: "/catalog", label: "Catalog" },
-  { href: "/requests", label: "My Requests" },
-  { href: "/admin", label: "Admin" },
+  { href: "/catalog", label: "Catalog", adminOnly: false },
+  { href: "/requests", label: "My Requests", adminOnly: false },
+  { href: "/admin", label: "Admin", adminOnly: true },
+  { href: "/admin/users", label: "Users", adminOnly: true },
 ];
 
-export function Nav() {
+export function Nav({ user }: { user: SessionUser }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const role = usePortal((s) => s.role);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -46,8 +46,8 @@ export function Nav() {
 
           <div className="ml-1 hidden items-center gap-1 md:flex">
             {LINKS.map((l) => {
+              if (l.adminOnly && user.role !== "admin") return null;
               const active = pathname === l.href || pathname.startsWith(l.href + "/");
-              if (l.href === "/admin" && role !== "admin") return null;
               return (
                 <Link
                   key={l.href}
@@ -84,7 +84,7 @@ export function Nav() {
           </button>
 
           <ThemeToggle />
-          <RoleSwitcher />
+          <UserMenu user={user} />
         </nav>
       </header>
 

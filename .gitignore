@@ -52,3 +52,6 @@ next-env.d.ts
 # CI deploy assembly artifacts
 /deploy/
 /release.zip
+
+# local data store
+/.data/

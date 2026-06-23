@@ -1,0 +1,10 @@
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/auth/session";
+
+/** Admin area is restricted to admin accounts. */
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const session = await getSession();
+  if (!session) redirect("/login");
+  if (session.role !== "admin") redirect("/portal");
+  return <>{children}</>;
+}
