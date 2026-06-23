@@ -31,8 +31,11 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies and build
+        # `npm install` (not `npm ci`) tolerates the cross-platform optional-dep
+        # gap in package-lock.json (e.g. Linux-only @emnapi/* for Tailwind oxide)
+        # that a Windows-generated lock file omits.
         run: |
-          npm ci
+          npm install --no-audit --no-fund
           npm run build
 
       - name: Assemble standalone deployment package
