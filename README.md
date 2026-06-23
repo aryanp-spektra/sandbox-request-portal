@@ -25,7 +25,9 @@ The app is split into two route groups: `(app)` (role-gated, with the partner na
 
 ## Data
 
-All 178 labs come from the FY27 catalogue, normalized into `src/data/labs.json` (with a generated "Last updated" stamp in `src/data/meta.json`) by `tools/build_seed.py`. The script reads the source `.xlsx` (kept outside this repo) and maps each lab's catalogue status onto the lifecycle state machine the portal uses.
+All 177 labs come from the FY27 catalogue (`External-PostBuild2026_GL_Catalog_FY27_v2.xlsx`), normalized into `src/data/labs.json` (with a generated "Last updated" stamp in `src/data/meta.json`) by the seed generator. The generator reads the source `.xlsx` directly (unzipping the OpenXML, no Excel/Python/Node needed) and maps each lab's catalogue status onto the lifecycle state machine the portal uses.
+
+Run it with PowerShell: `pwsh tools/build_seed.ps1` (or `powershell -File tools/build_seed.ps1`). `tools/build_seed.py` is the original Python version, kept for reference.
 
 ## Local development
 

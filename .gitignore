@@ -42,3 +42,9 @@ next-env.d.ts
 
 # Claude Code local preview config
 .claude/
+
+# internal source catalogue and reference docs (do not publish to public repo).
+# the generated src/data/labs.json is what ships; the raw .xlsx stays local.
+/*.xlsx
+/*.docx
+/*.pdf

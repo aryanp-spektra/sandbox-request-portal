@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Boxes, Search, Command } from "lucide-react";
+import { Search, Command } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { usePortal } from "@/lib/store";
 import { CommandSearch } from "./CommandSearch";
 import { RoleSwitcher } from "./RoleSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
+import { BrandMark } from "@/components/Brand";
 
 const LINKS = [
   { href: "/catalog", label: "Catalog" },
@@ -37,9 +38,7 @@ export function Nav() {
       <header className="sticky top-0 z-50 border-b border-line glass">
         <nav className="wrap flex h-16 items-center gap-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-[10px] aurora-fill shadow-[var(--shadow-glow)]">
-              <Boxes className="h-5 w-5 text-white" />
-            </span>
+            <BrandMark size={36} />
             <span className="font-display text-[18px] font-extrabold tracking-tight text-ink">
               Sandbox<span className="aurora-text">.</span>
             </span>

@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Boxes, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { LABS } from "@/lib/labs";
 import { ThemeToggle } from "@/components/shell/ThemeToggle";
+import { BrandMark, BrandLockupWhite } from "@/components/Brand";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,9 +10,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <header className="sticky top-0 z-50 border-b border-line glass">
         <div className="wrap-wide flex h-16 items-center gap-4">
           <Link href="/explore" className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-[10px] aurora-fill shadow-[var(--shadow-glow)]">
-              <Boxes className="h-5 w-5 text-white" />
-            </span>
+            <BrandMark size={38} />
             <span className="leading-tight">
               <span className="block font-display text-[16px] font-extrabold tracking-tight text-ink">
                 Microsoft Sandbox
@@ -39,18 +38,15 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
       <div className="min-h-[calc(100vh-180px)]">{children}</div>
 
-      <footer className="mt-16 border-t border-line bg-surface">
-        <div className="wrap-wide flex flex-col items-center justify-between gap-3 py-8 text-center sm:flex-row sm:text-left">
-          <div className="flex items-center gap-2.5">
-            <span className="grid h-8 w-8 place-items-center rounded-[9px] aurora-fill">
-              <Boxes className="h-[18px] w-[18px] text-white" />
-            </span>
-            <div className="text-[13px] leading-tight">
-              <div className="font-display font-bold text-ink">Microsoft Sandbox</div>
-              <div className="text-faint">Powered by CloudLabs, Spektra Systems</div>
-            </div>
+      <footer className="deep mt-16">
+        <div className="wrap-wide relative z-10 flex flex-col items-center justify-between gap-5 py-10 text-center sm:flex-row sm:text-left">
+          <div className="flex flex-col items-center gap-3 sm:items-start">
+            <BrandLockupWhite height={30} />
+            <p className="text-[12.5px] text-white/55">
+              Microsoft Sandbox, powered by CloudLabs from Spektra Systems.
+            </p>
           </div>
-          <p className="text-[12.5px] text-faint">
+          <p className="max-w-[340px] text-[12.5px] leading-relaxed text-white/55">
             This catalog is for reference. Voucher requests are handled through the partner portal.
           </p>
         </div>

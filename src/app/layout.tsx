@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   title: "Sandbox Portal, Microsoft Sandbox by CloudLabs",
   description:
     "The self-service catalog and automated voucher fulfillment portal for the Microsoft Sandbox program.",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({

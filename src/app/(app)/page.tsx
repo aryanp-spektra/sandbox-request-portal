@@ -4,6 +4,7 @@ import { catalogStats, featured, FACETS, LABS } from "@/lib/labs";
 import { LabCard } from "@/components/LabCard";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { Button } from "@/components/ui/Button";
+import { BrandLockupWhite } from "@/components/Brand";
 
 const AREA_ICON: Record<string, typeof Cpu> = {
   "AI Business Solutions": Sparkles,
@@ -24,7 +25,8 @@ export default function Home() {
     <main>
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section className="deep relative overflow-hidden">
-        <div className="wrap relative z-10 pt-20 pb-40 text-center">
+        <div className="wrap relative z-10 pt-16 pb-40 text-center">
+          <BrandLockupWhite height={40} className="mx-auto mb-9 opacity-95" />
           <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[12.5px] font-semibold text-white/80 backdrop-blur">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-300 opacity-75" />
