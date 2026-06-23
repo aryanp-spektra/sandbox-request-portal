@@ -89,8 +89,13 @@ export const TYPE_META: Record<LabType, { label: string; accent: string; accent2
 /** How a catalogue status maps to a lifecycle (the seed applies the same map). */
 export const STATUS_TO_LIFECYCLE: Record<CatalogStatus, Lifecycle[]> = {
   Available: ["Ready", "InUse"],
+  "Available (Outdated content)": ["Stale"],
+  "Available on Demand (Funding Required)": ["Stale"],
   "In Pipeline (Enhancement)": ["Stale"],
   "In Pipeline": ["InTesting"],
+  "In Pipeline for July": ["InTesting"],
+  "In Pipeline for August": ["InTesting"],
+  "In-Pipeline On Demand": ["InTesting"],
   "Archive Now": ["Retired"],
   "Archive Q1 FY27": ["Retired"],
 };

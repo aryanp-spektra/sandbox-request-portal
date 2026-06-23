@@ -1,15 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  X, CalendarDays, Rocket, ArrowRight, ArrowLeft, Zap, Clock, Copy, Check,
-  PartyPopper, Inbox, Ticket,
+  X, CalendarDays, Rocket, ArrowRight, ArrowLeft, Mail, Inbox, Ticket,
 } from "lucide-react";
 import type { Lab, SandboxRequest, VoucherPurpose } from "@/lib/types";
 import { usePortal } from "@/lib/store";
-import { evaluate } from "@/lib/rules";
+import { voucherRequestMailto, SUPPORT_EMAIL } from "@/lib/request";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 
@@ -27,27 +25,33 @@ export function RequestModal({ lab, open, onClose }: { lab: Lab; open: boolean; 
   const [end, setEnd] = useState("");
   const [attendees, setAttendees] = useState(10);
   const [result, setResult] = useState<SandboxRequest | null>(null);
+  const [mailtoHref, setMailtoHref] = useState("");
 
   const reset = () => {
     setStep("purpose"); setPurpose("planned-delivery"); setQty(10);
-    setEngagement(""); setPartner(""); setStart(""); setEnd(""); setAttendees(10); setResult(null);
+    setEngagement(""); setPartner(""); setStart(""); setEnd(""); setAttendees(10);
+    setResult(null); setMailtoHref("");
   };
   const close = () => { onClose(); setTimeout(reset, 250); };
 
   const handleSubmit = () => {
-    const req = submit({
-      lab, quantity: qty, purpose,
+    const details = {
+      quantity: qty, purpose,
       delivery: purpose === "planned-delivery"
         ? { engagement, partner, startDate: start, endDate: end, expectedAttendees: attendees }
         : null,
       requesterName: "Prashanti Tembhare", requesterOrg: "WaferWire LLC",
-    });
+    };
+    const href = voucherRequestMailto(lab, details);
+    setMailtoHref(href);
+    const req = submit({ lab, ...details, channel: "support" });
     setResult(req);
     setStep("result");
+    // open the user's mail client with the prefilled request
+    window.location.href = href;
   };
 
   const detailsValid = purpose === "self-paced" ? qty > 0 : engagement && partner && start && end && qty > 0;
-  const preview = evaluate(lab, { quantity: qty });
 
   return (
     <AnimatePresence>
@@ -148,10 +152,12 @@ export function RequestModal({ lab, open, onClose }: { lab: Lab; open: boolean; 
                       {purpose === "planned-delivery" && <><Row k="Engagement" v={engagement} /><Row k="Partner" v={partner} /><Row k="Dates" v={`${start} → ${end}`} /></>}
                       <Row k="Vouchers" v={String(qty)} last />
                     </div>
-                    <div className="mt-4 flex items-start gap-2.5 rounded-[12px] p-3.5" style={{ background: preview.outcome === "instant" ? "var(--st-ready-bg)" : "var(--st-held-bg)" }}>
-                      {preview.outcome === "instant" ? <Zap className="mt-0.5 h-4 w-4 flex-none" style={{ color: "var(--color-ready)" }} /> : <Clock className="mt-0.5 h-4 w-4 flex-none" style={{ color: "var(--color-held)" }} />}
-                      <p className="text-[12.5px] leading-relaxed" style={{ color: preview.outcome === "instant" ? "var(--st-ready-ink)" : "var(--st-held-ink)" }}>
-                        {preview.outcome === "instant" ? "This lab is Ready, your vouchers issue the moment you submit." : `This lab needs validation, your request will be held and routed. ${preview.sla?.label}.`}
+                    <div className="mt-4 flex items-start gap-2.5 rounded-[12px] bg-primary/5 p-3.5">
+                      <Mail className="mt-0.5 h-4 w-4 flex-none text-primary" />
+                      <p className="text-[12.5px] leading-relaxed text-slate">
+                        Submitting opens a prefilled email to the CloudLabs support team
+                        ({SUPPORT_EMAIL}) with these details. They issue the vouchers and reply to you.
+                        A copy is tracked in My Requests.
                       </p>
                     </div>
                   </StepWrap>
@@ -159,7 +165,7 @@ export function RequestModal({ lab, open, onClose }: { lab: Lab; open: boolean; 
 
                 {step === "result" && result && (
                   <StepWrap key="result">
-                    <ResultView req={result} onClose={close} />
+                    <ResultView req={result} mailtoHref={mailtoHref} onClose={close} />
                   </StepWrap>
                 )}
               </AnimatePresence>
@@ -230,38 +236,41 @@ function Row({ k, v, last }: { k: string; v: string; last?: boolean }) {
   );
 }
 
-function ResultView({ req, onClose }: { req: SandboxRequest; onClose: () => void }) {
-  const instant = req.status === "instant-fulfilled";
+function ResultView({ req, mailtoHref, onClose }: { req: SandboxRequest; mailtoHref: string; onClose: () => void }) {
   return (
     <div className="text-center">
       <motion.div
         initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 18 }}
         className="mx-auto grid h-16 w-16 place-items-center rounded-full"
-        style={{ background: instant ? "var(--st-ready-bg)" : "var(--st-held-bg)" }}
+        style={{ background: "var(--st-held-bg)" }}
       >
-        {instant ? <PartyPopper className="h-8 w-8" style={{ color: "var(--color-ready)" }} /> : <Inbox className="h-8 w-8" style={{ color: "var(--color-held)" }} />}
+        <Inbox className="h-8 w-8" style={{ color: "var(--color-held)" }} />
       </motion.div>
 
-      <h3 className="mt-4 font-display text-[20px] font-extrabold text-ink">
-        {instant ? "Vouchers issued!" : "Request received & held"}
-      </h3>
-      <p className="mx-auto mt-1.5 max-w-[400px] text-[13.5px] leading-relaxed text-mut">
-        {instant
-          ? `${req.quantity} voucher${req.quantity > 1 ? "s" : ""} for "${req.labTitle}", ready to share with your customer now.`
-          : `We've routed your request to the Sandbox team for validation. Vouchers release automatically once the lab is marked Ready, within 3 days.`}
+      <h3 className="mt-4 font-display text-[20px] font-extrabold text-ink">Request sent to support</h3>
+      <p className="mx-auto mt-1.5 max-w-[420px] text-[13.5px] leading-relaxed text-mut">
+        We opened a prefilled email to the CloudLabs support team for {req.quantity} voucher{req.quantity > 1 ? "s" : ""} of
+        &nbsp;&ldquo;{req.labTitle}&rdquo;. Send it and they will issue the vouchers and reply to you.
       </p>
 
-      {instant && <VoucherList codes={req.vouchers} />}
-
-      {!instant && (
-        <div className="mt-5 rounded-[14px] border border-line bg-line2/50 p-4 text-left">
-          <div className="flex items-center gap-2 text-[12.5px] font-bold uppercase tracking-wide text-held"><Clock className="h-4 w-4" /> Tracking {req.id}</div>
-          <p className="mt-1.5 text-[12.5px] text-mut">You&apos;ll get an email the moment they&apos;re generated. Track status any time in My Requests.</p>
+      <div className="mt-5 rounded-[14px] border border-line bg-line2/50 p-4 text-left">
+        <div className="flex items-center gap-2 text-[12.5px] font-bold uppercase tracking-wide text-held">
+          <Inbox className="h-4 w-4" /> Tracking {req.id}
         </div>
-      )}
+        <p className="mt-1.5 text-[12.5px] text-mut">
+          If your mail client did not open, use the button below. This request is saved in My Requests.
+        </p>
+      </div>
 
-      <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+      <a
+        href={mailtoHref}
+        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-[12px] border border-line bg-surface px-4 py-2.5 text-[13.5px] font-semibold text-slate transition-colors hover:border-primary hover:text-primary"
+      >
+        <Mail className="h-4 w-4 text-primary" /> Reopen support email
+      </a>
+
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
         <Button href="/requests" className="flex-1" onClick={onClose}>
           <Ticket className="h-4 w-4" /> View in My Requests
         </Button>
@@ -271,28 +280,3 @@ function ResultView({ req, onClose }: { req: SandboxRequest; onClose: () => void
   );
 }
 
-function VoucherList({ codes }: { codes: string[] }) {
-  const [copied, setCopied] = useState(false);
-  const copyAll = () => {
-    navigator.clipboard?.writeText(codes.join("\n"));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1800);
-  };
-  return (
-    <div className="mt-5 text-left">
-      <div className="mb-2 flex items-center justify-between">
-        <span className="text-[12.5px] font-bold uppercase tracking-wide text-faint">{codes.length} voucher codes</span>
-        <button onClick={copyAll} className="flex items-center gap-1.5 text-[12.5px] font-semibold text-primary hover:underline">
-          {copied ? <><Check className="h-3.5 w-3.5" /> Copied</> : <><Copy className="h-3.5 w-3.5" /> Copy all</>}
-        </button>
-      </div>
-      <div className="max-h-[160px] space-y-1.5 overflow-y-auto rounded-[12px] border border-line bg-line2/40 p-2.5">
-        {codes.map((c) => (
-          <div key={c} className="rounded-lg bg-surface px-3 py-2 font-mono text-[13px] font-semibold tracking-wide text-ink shadow-soft">
-            {c}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}

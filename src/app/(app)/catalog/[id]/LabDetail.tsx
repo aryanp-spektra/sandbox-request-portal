@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   ArrowLeft, Layers, RefreshCw, Ticket, Users, CheckCircle2, Zap, Clock, Ban,
-  ChevronRight, FileText, Boxes, Sparkles,
+  ChevronRight, Mail, Boxes, Sparkles,
 } from "lucide-react";
 import { LABS } from "@/lib/labs";
 import { usePortal, withOverride } from "@/lib/store";
-import { TYPE_META, lifecycleConfig } from "@/lib/state";
+import { TYPE_META } from "@/lib/state";
 import { evaluate } from "@/lib/rules";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
 import { Button } from "@/components/ui/Button";
@@ -27,7 +27,6 @@ export function LabDetail({ id }: { id: string }) {
   const [open, setOpen] = useState(false);
 
   const meta = TYPE_META[lab.type];
-  const cfg = lifecycleConfig(lab.lifecycle);
   const decision = evaluate(lab);
 
   const related = LABS.filter((l) => l.id !== lab.id && l.solutionArea === lab.solutionArea && l.requestable).slice(0, 3);
@@ -138,7 +137,13 @@ export function LabDetail({ id }: { id: string }) {
               <OutcomeHeader outcome={decision.outcome} />
 
               <div className="p-5">
-                <p className="text-[13.5px] leading-relaxed text-slate">{decision.message}</p>
+                <p className="text-[13.5px] leading-relaxed text-slate">
+                  {decision.outcome === "instant"
+                    ? "This lab is verified ready. Submit a request and the CloudLabs support team issues your vouchers and replies to you."
+                    : decision.outcome === "held"
+                    ? "This lab needs validation first. Your request is routed to the CloudLabs support and Sandbox teams before vouchers are issued."
+                    : decision.message}
+                </p>
 
                 <dl className="mt-5 space-y-3.5">
                   <Stat icon={RefreshCw} label="Last refreshed" value={fmtDate(lab.lastRefresh)} />
@@ -157,7 +162,7 @@ export function LabDetail({ id }: { id: string }) {
                 <div className="mt-5">
                   {lab.requestable ? (
                     <Button onClick={() => setOpen(true)} size="lg" className="w-full">
-                      {decision.outcome === "instant" ? <><Zap className="h-4 w-4" /> Request & get voucher</> : <><Clock className="h-4 w-4" /> Request voucher</>}
+                      <Ticket className="h-4 w-4" /> Request a voucher
                     </Button>
                   ) : (
                     <Button size="lg" variant="subtle" className="w-full cursor-not-allowed opacity-70" disabled>
@@ -165,8 +170,8 @@ export function LabDetail({ id }: { id: string }) {
                     </Button>
                   )}
                   <p className="mt-2.5 flex items-center justify-center gap-1.5 text-center text-[12px] text-faint">
-                    <FileText className="h-3.5 w-3.5" />
-                    Redemption package included on issuance
+                    <Mail className="h-3.5 w-3.5" />
+                    Routed to CloudLabs support for issuance
                   </p>
                 </div>
               </div>
@@ -186,8 +191,8 @@ export function LabDetail({ id }: { id: string }) {
 
 function OutcomeHeader({ outcome }: { outcome: "instant" | "held" | "blocked" }) {
   const map = {
-    instant: { c: "var(--color-ready)", bg: "var(--st-ready-bg)", icon: Zap, t: "Issues instantly" },
-    held: { c: "var(--color-held)", bg: "var(--st-held-bg)", icon: Clock, t: "Held for validation" },
+    instant: { c: "var(--color-ready)", bg: "var(--st-ready-bg)", icon: Zap, t: "Ready to request" },
+    held: { c: "var(--color-held)", bg: "var(--st-held-bg)", icon: Clock, t: "Needs validation" },
     blocked: { c: "var(--color-retired)", bg: "var(--st-retired-bg)", icon: Ban, t: "Not requestable" },
   }[outcome];
   const Icon = map.icon;

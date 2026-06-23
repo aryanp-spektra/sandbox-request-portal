@@ -24,9 +24,13 @@ function stamp() {
 interface Row {
   Title: string;
   Type: string;
-  "Workload (Solution Area)": string;
-  "Solution Play": string;
+  "FY26 Solution Area": string;
+  "FY26 Solution Play": string;
+  "FY27 Solution Area": string;
+  "FY27 Solution Play": string;
   Level: string;
+  Delivery: string;
+  "Access (h)": string;
   Status: string;
   Requestable: string;
   "Last refreshed": string;
@@ -40,9 +44,13 @@ function toRows(labs: Lab[]): Row[] {
   return labs.map((l) => ({
     Title: l.title,
     Type: l.typeLabel,
-    "Workload (Solution Area)": String(l.solutionArea),
-    "Solution Play": l.skillArea ?? "",
+    "FY26 Solution Area": l.fy26Area ?? "New for FY27",
+    "FY26 Solution Play": l.fy26Play ?? "New for FY27",
+    "FY27 Solution Area": l.fy27Area,
+    "FY27 Solution Play": l.fy27Play ?? "",
     Level: l.level ?? "",
+    Delivery: l.style ?? "",
+    "Access (h)": l.durationHours ? String(l.durationHours) : "",
     Status: STATUS_LABEL[l.lifecycle],
     Requestable: l.requestable ? "Yes" : "No",
     "Last refreshed": fmt(l.lastRefresh),
@@ -59,9 +67,9 @@ export async function exportExcel(labs: Lab[], label = "filtered view") {
 
   const ws = XLSX.utils.json_to_sheet(rows);
   ws["!cols"] = [
-    { wch: 52 }, { wch: 16 }, { wch: 24 }, { wch: 26 }, { wch: 13 },
-    { wch: 16 }, { wch: 12 }, { wch: 14 }, { wch: 9 }, { wch: 46 },
-    { wch: 50 }, { wch: 60 },
+    { wch: 52 }, { wch: 16 }, { wch: 24 }, { wch: 30 }, { wch: 24 }, { wch: 30 },
+    { wch: 13 }, { wch: 18 }, { wch: 10 }, { wch: 16 }, { wch: 12 }, { wch: 14 },
+    { wch: 9 }, { wch: 46 }, { wch: 50 }, { wch: 60 },
   ];
 
   // summary sheet
@@ -117,12 +125,13 @@ export async function exportPDF(labs: Lab[], label = "Full catalog") {
 
   autoTable(doc, {
     startY: 78,
-    head: [["Lab", "Type", "Workload", "Solution play", "Level", "Status"]],
+    head: [["Lab", "Type", "FY26 play", "FY27 area", "FY27 play", "Level", "Status"]],
     body: labs.map((l) => [
       l.title,
       l.typeLabel,
-      String(l.solutionArea),
-      l.skillArea ?? "",
+      l.fy26Play ?? "New for FY27",
+      l.fy27Area,
+      l.fy27Play ?? "",
       l.level ?? "",
       STATUS_LABEL[l.lifecycle],
     ]),
@@ -130,12 +139,13 @@ export async function exportPDF(labs: Lab[], label = "Full catalog") {
     headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: "bold", fontSize: 8.5 },
     alternateRowStyles: { fillColor: [246, 247, 251] },
     columnStyles: {
-      0: { cellWidth: 250, fontStyle: "bold" },
-      1: { cellWidth: 95 },
+      0: { cellWidth: 210, fontStyle: "bold" },
+      1: { cellWidth: 78 },
       2: { cellWidth: 130 },
-      3: { cellWidth: 130 },
-      4: { cellWidth: 70 },
-      5: { cellWidth: 80 },
+      3: { cellWidth: 110 },
+      4: { cellWidth: 130 },
+      5: { cellWidth: 62 },
+      6: { cellWidth: 70 },
     },
     margin: { left: 40, right: 40 },
   });

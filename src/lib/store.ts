@@ -91,6 +91,8 @@ interface PortalState {
   submitRequest: (input: {
     lab: Lab; quantity: number; purpose: SandboxRequest["purpose"];
     delivery: SandboxRequest["delivery"]; requesterName: string; requesterOrg: string;
+    /** "support" routes to the CloudLabs support inbox (no auto-issued codes). */
+    channel?: "auto" | "support";
   }) => SandboxRequest;
   setLifecycle: (labId: string, next: Lifecycle) => { released: SandboxRequest[] };
   resetDemo: () => void;
@@ -107,11 +109,25 @@ export const usePortal = create<PortalState>()(
 
       setRole: (role) => set({ role }),
 
-      submitRequest: ({ lab, quantity, purpose, delivery, requesterName, requesterOrg }) => {
-        const live = withOverride(lab, get().lifecycleOverrides);
-        const dec = evaluate(live, { quantity });
+      submitRequest: ({ lab, quantity, purpose, delivery, requesterName, requesterOrg, channel = "auto" }) => {
         const now = new Date();
         seq += 1;
+
+        // Support channel: routed to CloudLabs support by email. No vouchers are
+        // issued in the portal (live generation is gated on a CloudLabs release).
+        if (channel === "support") {
+          const req: SandboxRequest = {
+            id: `REQ-${seq}`, kind: "voucher", labId: lab.id, labTitle: lab.title,
+            requesterName, requesterOrg, quantity, purpose, delivery, status: "submitted",
+            submittedAt: now.toISOString(), slaDueAt: null,
+            notes: "Routed to CloudLabs support by email.", vouchers: [],
+          };
+          set({ requests: [req, ...get().requests] });
+          return req;
+        }
+
+        const live = withOverride(lab, get().lifecycleOverrides);
+        const dec = evaluate(live, { quantity });
         const status: SandboxRequest["status"] =
           dec.outcome === "instant" ? "instant-fulfilled" : dec.outcome === "held" ? "held" : "blocked";
         const req: SandboxRequest = {

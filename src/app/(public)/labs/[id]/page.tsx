@@ -3,11 +3,14 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
   ArrowLeft, Layers, Sparkles, RefreshCw, BarChart3, Boxes, ChevronRight, Wand2,
+  Shuffle, Tag,
 } from "lucide-react";
 import { getLab, LABS } from "@/lib/labs";
 import { TYPE_META, lifecycleConfig } from "@/lib/state";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
 import { LabPreviewButton } from "@/components/LabPreviewButton";
+import { FyMapping } from "@/components/FyMapping";
+import { RecentRecorder } from "@/components/RecentRecorder";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -34,6 +37,7 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
 
   return (
     <main>
+      <RecentRecorder id={lab.id} />
       <div className="deep relative overflow-hidden">
         <div className="wrap-wide relative z-10 py-9">
           <Link href="/" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 transition-colors hover:text-white">
@@ -56,6 +60,13 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
             <Sparkles className="mt-1 h-4 w-4 flex-none" />
             {lab.hook}
           </p>
+
+          {lab.fy27Title && (
+            <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[12.5px] font-semibold text-cyan-100 backdrop-blur">
+              <Tag className="h-3.5 w-3.5" />
+              FY27 name: {lab.fy27Title}
+            </p>
+          )}
         </div>
       </div>
 
@@ -64,6 +75,18 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
           <Section title="Overview">
             <p className="text-[15px] leading-relaxed text-slate">{lab.overview}</p>
           </Section>
+
+          {(lab.fy26Area || lab.fy26Play || lab.fy27Play) && (
+            <Section title="FY26 to FY27 solution mapping">
+              <div className="rounded-[16px] border border-line bg-surface p-5 shadow-soft">
+                <p className="mb-4 flex items-center gap-2 text-[13px] text-mut">
+                  <Shuffle className="h-4 w-4 text-primary" />
+                  How this lab maps from the FY26 taxonomy to FY27.
+                </p>
+                <FyMapping lab={lab} />
+              </div>
+            </Section>
+          )}
 
           {lab.modules.length > 0 && (
             <Section title={`What you will do, ${lab.modules.length} modules`}>
@@ -131,9 +154,11 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
               </h3>
               <dl className="space-y-3 text-[13.5px]">
                 <Fact k="Offering" v={meta.label} />
-                <Fact k="Workload" v={String(lab.solutionArea)} />
-                {lab.skillArea && <Fact k="Solution play" v={lab.skillArea} />}
+                <Fact k="FY27 area" v={String(lab.fy27Area)} />
+                {lab.fy27Play && <Fact k="FY27 play" v={lab.fy27Play} />}
                 {lab.level && <Fact k="Level" v={lab.level} />}
+                {lab.style && <Fact k="Delivery" v={lab.style} />}
+                {lab.durationHours && <Fact k="Access" v={`${lab.durationHours}h`} />}
                 <Fact k="Status" v={cfg.label} />
                 <Fact k="Modules" v={String(lab.modules.length)} />
                 <div className="flex items-center justify-between gap-3 border-t border-line2 pt-3">

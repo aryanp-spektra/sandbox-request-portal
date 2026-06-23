@@ -2,10 +2,10 @@
    filenames live in exactly one place. Plain <img> keeps these robust without
    next/image config and avoids layout shift via explicit sizing. */
 
-export const LOGO_MARK = "/logo.png";
-export const LOGO_LIGHT_FULL = "/CloudLabs-Logo-Light.BXGBJjvO.png"; // dark text, for light bg
-export const LOGO_WHITE_FULL = "/CloudLabs-with-SS-white-Full-1024x346-1-768x260-1.png"; // white text, for dark bg
-export const SITE_ICON = "/site-icon-512.webp";
+export const LOGO_MARK = "/cl-light-small.webp"; // cloud mark, works on light or dark
+export const LOGO_LIGHT_FULL = "/cl-light-mode-full.png"; // dark text, for light bg
+export const LOGO_WHITE_FULL = "/cl-dark-full.webp"; // white text, for dark bg
+export const SITE_ICON = "/cl-light-small.webp";
 
 /** The purple cloud mark. Works on light or dark surfaces. */
 export function BrandMark({

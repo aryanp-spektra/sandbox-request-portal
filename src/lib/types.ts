@@ -21,11 +21,16 @@ export type SolutionArea =
   | "Cloud & AI Platforms"
   | "Security";
 
-/** Catalogue status as it exists in the FY27 spreadsheet. */
+/** Catalogue status as it exists in the FY27 v2 spreadsheet. */
 export type CatalogStatus =
   | "Available"
+  | "Available (Outdated content)"
+  | "Available on Demand (Funding Required)"
   | "In Pipeline"
   | "In Pipeline (Enhancement)"
+  | "In Pipeline for July"
+  | "In Pipeline for August"
+  | "In-Pipeline On Demand"
   | "Archive Now"
   | "Archive Q1 FY27";
 
@@ -48,9 +53,21 @@ export interface Lab {
   isNew: boolean;
   type: LabType;
   typeLabel: string;
+  /** Primary (current, FY27) taxonomy. solutionArea === fy27Area, skillArea === fy27Play. */
   solutionArea: SolutionArea | string;
   skillArea: string | null;
+  /** FY26 -> FY27 solution-area and solution-play crosswalk (from the v2 catalogue). */
+  fy26Area: string | null;
+  fy26Play: string | null;
+  fy27Area: string;
+  fy27Play: string | null;
+  /** New FY27 lab name when the lab was renamed/rebranded for Build 2026. */
+  fy27Title: string | null;
   level: Level | null;
+  /** Delivery style: "Self Paced" | "Planned Deliveries" | "Instructor Led". */
+  style: string | null;
+  /** Access/duration window in hours (null when unspecified). */
+  durationHours: number | null;
   overview: string;
   modules: string[];
   products: string[];
