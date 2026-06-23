@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Boxes, ArrowUpRight } from "lucide-react";
 import { LABS } from "@/lib/labs";
+import { ThemeToggle } from "@/components/shell/ThemeToggle";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -25,6 +26,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-ready)" }} />
             {LABS.length} labs, updated for Build 2026
           </span>
+          <ThemeToggle />
           <Link
             href="/"
             className="inline-flex items-center gap-1.5 rounded-[10px] border border-line bg-surface px-3 py-2 text-[13px] font-semibold text-slate transition-colors hover:border-[#cdd2e2]"

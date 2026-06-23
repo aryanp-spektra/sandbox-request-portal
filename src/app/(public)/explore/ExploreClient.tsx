@@ -96,10 +96,16 @@ export function ExploreClient() {
   return (
     <main>
       {/* ── intro band ── */}
-      <section className="border-b border-line bg-gradient-to-b from-[#f0f2fb] to-canvas">
+      <section className="border-b border-line bg-gradient-to-b from-[#f0f2fb] to-canvas dark:from-[#10162c]">
         <div className="wrap-wide pt-12 pb-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-[12px] font-semibold text-primary">
-            <Sparkles className="h-3.5 w-3.5" /> FY27 catalog, refreshed for Build 2026
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-[12px] font-semibold text-primary">
+              <Sparkles className="h-3.5 w-3.5" /> FY27 catalog, refreshed for Build 2026
+            </div>
+            <span className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-faint">
+              <History className="h-3.5 w-3.5" />
+              Last updated {lastUpdatedLabel()}
+            </span>
           </div>
           <h1 className="mt-4 max-w-[760px] font-display text-[clamp(30px,4.5vw,46px)] font-extrabold leading-[1.08] tracking-tight text-ink">
             Explore the Microsoft Sandbox catalog
@@ -115,15 +121,6 @@ export function ExploreClient() {
             <Metric value={FACETS.solutionAreas.length} label="Workloads" />
             <Metric value={FACETS.skillAreas.length} label="Solution plays" />
             <Metric value={changed.length} label="Changed in Build 2026" />
-            <div className="flex items-center gap-2.5 rounded-[12px] border border-line bg-surface px-3.5 py-2.5 shadow-soft">
-              <span className="grid h-8 w-8 place-items-center rounded-[9px] bg-primary/8">
-                <History className="h-4 w-4 text-primary" />
-              </span>
-              <div className="leading-tight">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-faint">Last updated</div>
-                <div className="font-display text-[14.5px] font-bold text-ink">{lastUpdatedLabel()}</div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -227,7 +224,7 @@ function WhatsNew({ labs }: { labs: Lab[] }) {
 
   return (
     <div className="space-y-9">
-      <div className="rounded-[16px] border border-line bg-gradient-to-br from-[#f5f3ff] to-surface p-6">
+      <div className="rounded-[16px] border border-line bg-gradient-to-br from-[#f5f3ff] to-surface p-6 dark:from-[#1a1638]">
         <h2 className="font-display text-[22px] font-extrabold text-ink">What changed for Build 2026</h2>
         <p className="mt-1.5 max-w-[640px] text-[14px] text-mut">
           A release-over-release view of the catalog. New tracks coming online, existing labs getting

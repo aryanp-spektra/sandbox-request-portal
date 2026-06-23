@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* class-based dark mode: utilities prefixed `dark:` apply under .dark */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ════════════════════════════════════════════════════════════════════════
    SANDBOX PORTAL, "Aurora" design system
    Deep-ink base · indigo→violet→cyan signature gradient · Sora + Inter
@@ -54,6 +57,52 @@
   --st-testing-bg: #f5f3ff; --st-testing-ink: #6d28d9; --st-testing-bd: #ddd6fe;
   --st-retired-bg: #f1f5f9; --st-retired-ink: #64748b; --st-retired-bd: #e2e8f0;
 }
+
+/* ── dark theme ──────────────────────────────────────────────────────────
+   Deep indigo-ink surfaces, brighter brand + lifted text for contrast.
+   Overrides the same --color-* tokens so every Tailwind utility adapts.   */
+.dark {
+  --color-ink: #eef0f8;
+  --color-ink2: #c9cee0;
+  --color-canvas: #080b16;
+  --color-surface: #121830;
+  --color-line: #28304d;
+  --color-line2: #1a2138;
+  --color-slate: #c2c8db;
+  --color-mut: #9298b4;
+  --color-faint: #6c7396;
+
+  --color-primary: #818cf8;
+  --color-primary-600: #6366f1;
+  --color-sky: #60a5fa;
+
+  --color-ready: #34d399;
+  --color-inuse: #60a5fa;
+  --color-held: #fbbf24;
+  --color-testing: #a78bfa;
+  --color-retired: #94a3b8;
+
+  --aurora: linear-gradient(120deg, #818cf8 0%, #a78bfa 45%, #22d3ee 100%);
+  --aurora-soft: linear-gradient(120deg, #a5b4fc, #c4b5fd, #a5f3fc);
+
+  --st-ready-bg: rgba(5, 150, 105, 0.16);   --st-ready-ink: #6ee7b7;   --st-ready-bd: rgba(16, 185, 129, 0.32);
+  --st-inuse-bg: rgba(37, 99, 235, 0.18);   --st-inuse-ink: #93c5fd;   --st-inuse-bd: rgba(59, 130, 246, 0.34);
+  --st-held-bg: rgba(217, 119, 6, 0.16);    --st-held-ink: #fcd34d;    --st-held-bd: rgba(245, 158, 11, 0.34);
+  --st-testing-bg: rgba(124, 58, 237, 0.18); --st-testing-ink: #c4b5fd; --st-testing-bd: rgba(139, 92, 246, 0.34);
+  --st-retired-bg: rgba(100, 116, 139, 0.18); --st-retired-ink: #cbd5e1; --st-retired-bd: rgba(100, 116, 139, 0.34);
+
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.45);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.5), 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-lift: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+.dark .glass {
+  background: rgba(10, 14, 28, 0.72);
+}
+
+.dark .skeleton { background: #1a2138; }
+.dark ::-webkit-scrollbar-thumb { background: #2a3354; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #36406a; }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }

@@ -8,6 +8,7 @@ import { cn } from "@/lib/cn";
 import { usePortal } from "@/lib/store";
 import { CommandSearch } from "./CommandSearch";
 import { RoleSwitcher } from "./RoleSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 
 const LINKS = [
   { href: "/catalog", label: "Catalog" },
@@ -83,6 +84,7 @@ export function Nav() {
             <Search className="h-4 w-4" />
           </button>
 
+          <ThemeToggle />
           <RoleSwitcher />
         </nav>
       </header>
