@@ -2,56 +2,57 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  X, CalendarDays, Rocket, ArrowRight, ArrowLeft, Mail, Inbox, Ticket,
-} from "lucide-react";
-import type { Lab, SandboxRequest, VoucherPurpose } from "@/lib/types";
+import { X, Mail, Inbox, Ticket, CalendarClock, Send } from "lucide-react";
+import type { Lab, SandboxRequest } from "@/lib/types";
 import { usePortal } from "@/lib/store";
 import { voucherRequestMailto, SUPPORT_EMAIL } from "@/lib/request";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 
-type Step = "purpose" | "details" | "review" | "result";
+const REQUESTER = { name: "Prashanti Tembhare", org: "WaferWire LLC" };
 
+/**
+ * Voucher request. Deliberately minimal: pick a quantity, optionally say when
+ * it is needed by and add any custom requirements, then submit. Submitting
+ * opens a prefilled email to CloudLabs support (live issuance is gated on a
+ * CloudLabs release) and logs the request to My Requests.
+ */
 export function RequestModal({ lab, open, onClose }: { lab: Lab; open: boolean; onClose: () => void }) {
   const submit = usePortal((s) => s.submitRequest);
 
-  const [step, setStep] = useState<Step>("purpose");
-  const [purpose, setPurpose] = useState<VoucherPurpose>("planned-delivery");
-  const [qty, setQty] = useState(10);
-  const [engagement, setEngagement] = useState("");
-  const [partner, setPartner] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
-  const [attendees, setAttendees] = useState(10);
+  const [customer, setCustomer] = useState("");
+  const [qty, setQty] = useState(1);
+  const [neededBy, setNeededBy] = useState("");
+  const [customReq, setCustomReq] = useState("");
   const [result, setResult] = useState<SandboxRequest | null>(null);
   const [mailtoHref, setMailtoHref] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const reset = () => {
-    setStep("purpose"); setPurpose("planned-delivery"); setQty(10);
-    setEngagement(""); setPartner(""); setStart(""); setEnd(""); setAttendees(10);
-    setResult(null); setMailtoHref("");
-  };
+  const reset = () => { setCustomer(""); setQty(1); setNeededBy(""); setCustomReq(""); setResult(null); setMailtoHref(""); setSubmitting(false); };
   const close = () => { onClose(); setTimeout(reset, 250); };
 
-  const handleSubmit = () => {
-    const details = {
-      quantity: qty, purpose,
-      delivery: purpose === "planned-delivery"
-        ? { engagement, partner, startDate: start, endDate: end, expectedAttendees: attendees }
-        : null,
-      requesterName: "Prashanti Tembhare", requesterOrg: "WaferWire LLC",
-    };
-    const href = voucherRequestMailto(lab, details);
-    setMailtoHref(href);
-    const req = submit({ lab, ...details, channel: "support" });
-    setResult(req);
-    setStep("result");
-    // open the user's mail client with the prefilled request
-    window.location.href = href;
-  };
+  const valid = customer.trim().length > 0 && qty >= 1;
 
-  const detailsValid = purpose === "self-paced" ? qty > 0 : engagement && partner && start && end && qty > 0;
+  const handleSubmit = async () => {
+    if (submitting || !valid) return;
+    setSubmitting(true);
+    const href = voucherRequestMailto(lab, {
+      quantity: qty, customerName: customer, neededBy, customRequirements: customReq,
+      requesterName: REQUESTER.name, requesterOrg: REQUESTER.org,
+    });
+    setMailtoHref(href);
+    try {
+      const req = await submit({
+        labId: lab.id, quantity: qty, customerName: customer.trim(),
+        neededBy: neededBy || null, customRequirements: customReq || null,
+      });
+      setResult(req);
+      // open the user's mail client with the prefilled request
+      window.location.href = href;
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -62,7 +63,7 @@ export function RequestModal({ lab, open, onClose }: { lab: Lab; open: boolean; 
         >
           <div className="absolute inset-0 bg-ink/50 backdrop-blur-sm" onClick={close} />
           <motion.div
-            className="relative flex max-h-[92vh] w-full max-w-[560px] flex-col overflow-hidden rounded-t-[22px] bg-surface shadow-[var(--shadow-lift)] sm:rounded-[22px]"
+            className="relative flex max-h-[92vh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-[22px] bg-surface shadow-[var(--shadow-lift)] sm:rounded-[22px]"
             initial={{ y: 40, scale: 0.98, opacity: 0 }}
             animate={{ y: 0, scale: 1, opacity: 1 }}
             exit={{ y: 20, opacity: 0 }}
@@ -79,109 +80,74 @@ export function RequestModal({ lab, open, onClose }: { lab: Lab; open: boolean; 
               </button>
             </div>
 
-            {/* progress */}
-            {step !== "result" && (
-              <div className="flex gap-1.5 px-5 pt-4">
-                {(["purpose", "details", "review"] as Step[]).map((s) => {
-                  const idx = ["purpose", "details", "review"].indexOf(s);
-                  const cur = ["purpose", "details", "review"].indexOf(step);
-                  return <span key={s} className={cn("h-1 flex-1 rounded-full", idx <= cur ? "aurora-fill" : "bg-line")} />;
-                })}
-              </div>
-            )}
-
             <div className="flex-1 overflow-y-auto px-5 py-5">
-              <AnimatePresence mode="wait">
-                {step === "purpose" && (
-                  <StepWrap key="purpose">
-                    <h3 className="mb-1 font-display text-[18px] font-bold text-ink">What&apos;s this for?</h3>
-                    <p className="mb-4 text-[13.5px] text-mut">This tailors the details we collect.</p>
-                    <div className="space-y-3">
-                      <PurposeCard
-                        active={purpose === "planned-delivery"} onClick={() => setPurpose("planned-delivery")}
-                        icon={CalendarDays} title="Planned delivery"
-                        desc="A scheduled engagement, workshop or event with a partner and dates."
+              {result ? (
+                <ResultView req={result} mailtoHref={mailtoHref} onClose={close} />
+              ) : (
+                <div className="space-y-5">
+                  <Field label="Customer / organization">
+                    <input
+                      value={customer}
+                      onChange={(e) => setCustomer(e.target.value)}
+                      placeholder="Who are these vouchers for? e.g. Contoso"
+                      className={inputCls}
+                      autoFocus
+                      aria-label="Customer or organization name"
+                    />
+                  </Field>
+
+                  <Field label="How many vouchers?">
+                    <div className="flex items-center gap-2">
+                      <Stepper onClick={() => setQty((q) => Math.max(1, q - 1))}>–</Stepper>
+                      <input
+                        type="number" min={1} value={qty}
+                        onChange={(e) => setQty(Math.max(1, Math.floor(+e.target.value) || 1))}
+                        className={cn(inputCls, "text-center font-bold")}
+                        aria-label="Number of vouchers"
                       />
-                      <PurposeCard
-                        active={purpose === "self-paced"} onClick={() => setPurpose("self-paced")}
-                        icon={Rocket} title="Self-paced / self-based"
-                        desc="Vouchers for individual, self-driven exploration. Just a quantity."
+                      <Stepper onClick={() => setQty((q) => q + 1)}>+</Stepper>
+                    </div>
+                  </Field>
+
+                  <Field label="When do you need them by?" hint="Optional">
+                    <div className="relative">
+                      <CalendarClock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-faint" />
+                      <input
+                        type="date" value={neededBy}
+                        onChange={(e) => setNeededBy(e.target.value)}
+                        className={cn(inputCls, "pl-9")}
+                        aria-label="Date vouchers are needed by"
                       />
                     </div>
-                  </StepWrap>
-                )}
+                  </Field>
 
-                {step === "details" && (
-                  <StepWrap key="details">
-                    <h3 className="mb-4 font-display text-[18px] font-bold text-ink">Request details</h3>
-                    <div className="space-y-4">
-                      {purpose === "planned-delivery" && (
-                        <>
-                          <Field label="Engagement / event name">
-                            <input value={engagement} onChange={(e) => setEngagement(e.target.value)} placeholder="e.g. Copilot Enablement Workshop" className={inputCls} />
-                          </Field>
-                          <Field label="Partner / customer">
-                            <input value={partner} onChange={(e) => setPartner(e.target.value)} placeholder="e.g. Contoso" className={inputCls} />
-                          </Field>
-                          <div className="grid grid-cols-2 gap-3">
-                            <Field label="Start date"><input type="date" value={start} onChange={(e) => setStart(e.target.value)} className={inputCls} /></Field>
-                            <Field label="End date"><input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className={inputCls} /></Field>
-                          </div>
-                          <Field label="Expected attendees">
-                            <input type="number" min={1} value={attendees} onChange={(e) => { const v = +e.target.value; setAttendees(v); setQty(v); }} className={inputCls} />
-                          </Field>
-                        </>
-                      )}
-                      <Field label="Vouchers needed">
-                        <div className="flex items-center gap-2">
-                          <button onClick={() => setQty((q) => Math.max(1, q - 1))} className="grid h-10 w-10 place-items-center rounded-lg border border-line text-mut hover:bg-line2">–</button>
-                          <input type="number" min={1} value={qty} onChange={(e) => setQty(Math.max(1, +e.target.value))} className={cn(inputCls, "text-center font-bold")} />
-                          <button onClick={() => setQty((q) => q + 1)} className="grid h-10 w-10 place-items-center rounded-lg border border-line text-mut hover:bg-line2">+</button>
-                        </div>
-                      </Field>
-                    </div>
-                  </StepWrap>
-                )}
+                  <Field label="Custom requirements" hint="Optional">
+                    <textarea
+                      value={customReq}
+                      onChange={(e) => setCustomReq(e.target.value)}
+                      rows={3}
+                      placeholder="Anything to flag, e.g. extend the lab duration, a specific Azure region, or bundling multiple labs."
+                      className={cn(inputCls, "resize-none")}
+                    />
+                  </Field>
 
-                {step === "review" && (
-                  <StepWrap key="review">
-                    <h3 className="mb-4 font-display text-[18px] font-bold text-ink">Review & submit</h3>
-                    <div className="overflow-hidden rounded-[14px] border border-line">
-                      <Row k="Lab" v={lab.title} />
-                      <Row k="Purpose" v={purpose === "planned-delivery" ? "Planned delivery" : "Self-paced"} />
-                      {purpose === "planned-delivery" && <><Row k="Engagement" v={engagement} /><Row k="Partner" v={partner} /><Row k="Dates" v={`${start} → ${end}`} /></>}
-                      <Row k="Vouchers" v={String(qty)} last />
-                    </div>
-                    <div className="mt-4 flex items-start gap-2.5 rounded-[12px] bg-primary/5 p-3.5">
-                      <Mail className="mt-0.5 h-4 w-4 flex-none text-primary" />
-                      <p className="text-[12.5px] leading-relaxed text-slate">
-                        Submitting opens a prefilled email to the CloudLabs support team
-                        ({SUPPORT_EMAIL}) with these details. They issue the vouchers and reply to you.
-                        A copy is tracked in My Requests.
-                      </p>
-                    </div>
-                  </StepWrap>
-                )}
-
-                {step === "result" && result && (
-                  <StepWrap key="result">
-                    <ResultView req={result} mailtoHref={mailtoHref} onClose={close} />
-                  </StepWrap>
-                )}
-              </AnimatePresence>
+                  <div className="flex items-start gap-2.5 rounded-[12px] bg-primary/5 p-3.5">
+                    <Mail className="mt-0.5 h-4 w-4 flex-none text-primary" />
+                    <p className="text-[12.5px] leading-relaxed text-slate">
+                      Submitting opens a prefilled email to CloudLabs support ({SUPPORT_EMAIL}). Add anything
+                      else there and hit send; they issue the vouchers and reply to you. A copy is tracked in My Requests.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* footer nav */}
-            {step !== "result" && (
+            {!result && (
               <div className="flex items-center justify-between gap-3 border-t border-line px-5 py-4">
-                {step !== "purpose" ? (
-                  <Button variant="ghost" onClick={() => setStep(step === "review" ? "details" : "purpose")}>
-                    <ArrowLeft className="h-4 w-4" /> Back
-                  </Button>
-                ) : <span />}
-                {step === "purpose" && <Button onClick={() => setStep("details")}>Continue <ArrowRight className="h-4 w-4" /></Button>}
-                {step === "details" && <Button onClick={() => setStep("review")} disabled={!detailsValid}>Review <ArrowRight className="h-4 w-4" /></Button>}
-                {step === "review" && <Button onClick={handleSubmit}>Submit request <ArrowRight className="h-4 w-4" /></Button>}
+                <Button variant="ghost" onClick={close}>Cancel</Button>
+                <Button onClick={handleSubmit} disabled={!valid || submitting}>
+                  <Send className="h-4 w-4" /> {submitting ? "Sending…" : "Send request"}
+                </Button>
               </div>
             )}
           </motion.div>
@@ -191,48 +157,25 @@ export function RequestModal({ lab, open, onClose }: { lab: Lab; open: boolean; 
   );
 }
 
-const inputCls = "w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-[14px] outline-none transition-colors focus:border-primary placeholder:text-faint";
+const inputCls = "w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-[14px] text-ink outline-none transition-colors focus:border-primary placeholder:text-faint";
 
-function StepWrap({ children }: { children: React.ReactNode }) {
+function Stepper({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
   return (
-    <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.2 }}>
+    <button onClick={onClick} className="grid h-10 w-11 flex-none place-items-center rounded-lg border border-line text-[18px] font-semibold text-mut transition-colors hover:bg-line2 hover:text-ink">
       {children}
-    </motion.div>
-  );
-}
-
-function PurposeCard({ active, onClick, icon: Icon, title, desc }: { active: boolean; onClick: () => void; icon: typeof Rocket; title: string; desc: string }) {
-  return (
-    <button onClick={onClick} className={cn("flex w-full items-start gap-3.5 rounded-[14px] border p-4 text-left transition-all", active ? "border-primary bg-primary/5 shadow-soft" : "border-line hover:border-[#cdd2e2]")}>
-      <span className={cn("grid h-10 w-10 flex-none place-items-center rounded-[11px]", active ? "aurora-fill text-white" : "bg-line2 text-mut")}>
-        <Icon className="h-5 w-5" />
-      </span>
-      <span className="flex-1">
-        <span className="block font-display text-[15px] font-bold text-ink">{title}</span>
-        <span className="block text-[12.5px] leading-relaxed text-mut">{desc}</span>
-      </span>
-      <span className={cn("mt-1 grid h-5 w-5 flex-none place-items-center rounded-full border-2", active ? "border-primary" : "border-line")}>
-        {active && <span className="h-2.5 w-2.5 rounded-full aurora-fill" />}
-      </span>
     </button>
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[12.5px] font-semibold text-slate">{label}</span>
+      <span className="mb-1.5 flex items-center gap-2">
+        <span className="text-[13px] font-semibold text-slate">{label}</span>
+        {hint && <span className="text-[11px] font-medium text-faint">{hint}</span>}
+      </span>
       {children}
     </label>
-  );
-}
-
-function Row({ k, v, last }: { k: string; v: string; last?: boolean }) {
-  return (
-    <div className={cn("flex items-center justify-between gap-4 px-4 py-2.5 text-[13px]", !last && "border-b border-line")}>
-      <span className="text-faint">{k}</span>
-      <span className="truncate font-semibold text-ink">{v}</span>
-    </div>
   );
 }
 
@@ -250,7 +193,7 @@ function ResultView({ req, mailtoHref, onClose }: { req: SandboxRequest; mailtoH
 
       <h3 className="mt-4 font-display text-[20px] font-extrabold text-ink">Request sent to support</h3>
       <p className="mx-auto mt-1.5 max-w-[420px] text-[13.5px] leading-relaxed text-mut">
-        We opened a prefilled email to the CloudLabs support team for {req.quantity} voucher{req.quantity > 1 ? "s" : ""} of
+        We opened a prefilled email to CloudLabs support for {req.quantity} voucher{req.quantity > 1 ? "s" : ""} of
         &nbsp;&ldquo;{req.labTitle}&rdquo;. Send it and they will issue the vouchers and reply to you.
       </p>
 
@@ -279,4 +222,3 @@ function ResultView({ req, mailtoHref, onClose }: { req: SandboxRequest; mailtoH
     </div>
   );
 }
-

@@ -109,8 +109,12 @@ export interface SandboxRequest {
   requesterName: string;
   requesterOrg: string;
   quantity: number;
+  /** The customer / organization the vouchers are for. */
+  customerName: string | null;
   purpose: VoucherPurpose | null;
   delivery: PlannedDeliveryDetails | null;
+  /** ETA: the date the requester needs the vouchers by (null if not given). */
+  neededBy: string | null;
   status: RequestStatus;
   submittedAt: string;
   slaDueAt: string | null;

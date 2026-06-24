@@ -22,13 +22,18 @@ const STATUS_META: Record<SandboxRequest["status"], { label: string; c: string; 
 };
 
 export default function RequestsPage() {
-  const requests = usePortal((s) => s.requests);
+  const allRequests = usePortal((s) => s.requests);
+  const hydrated = usePortal((s) => s.hydrated);
+  const me = usePortal((s) => s.me);
   const [tab, setTab] = useState<"requests" | "wallet">("requests");
 
-  const wallet = useMemo(
-    () => requests.filter((r) => r.vouchers.length > 0),
-    [requests]
+  // "My requests" = the ones I submitted. The central store holds everyone's;
+  // the admin cockpit is where the full pipeline is reviewed.
+  const requests = useMemo(
+    () => (me ? allRequests.filter((r) => r.requesterName === me.username) : allRequests),
+    [allRequests, me]
   );
+  const wallet = useMemo(() => requests.filter((r) => r.vouchers.length > 0), [requests]);
   const totalCodes = wallet.reduce((n, r) => n + r.vouchers.length, 0);
   const held = requests.filter((r) => r.status === "held").length;
 
@@ -37,7 +42,7 @@ export default function RequestsPage() {
       <div className="mb-6">
         <h1 className="font-display text-[34px] font-extrabold tracking-tight text-ink">My requests</h1>
         <p className="mt-1 text-[15px] text-mut">
-          Prashanti Tembhare · WaferWire LLC, {requests.length} requests, {totalCodes} vouchers
+          {me ? `${me.username} · ${me.email}` : "Signed in"}, {requests.length} requests, {totalCodes} vouchers
           {held > 0 && <> · <span className="font-semibold text-held">{held} held</span></>}
         </p>
       </div>
@@ -47,7 +52,12 @@ export default function RequestsPage() {
         <Tab active={tab === "wallet"} onClick={() => setTab("wallet")} icon={Wallet}>Voucher wallet {totalCodes}</Tab>
       </div>
 
-      {tab === "requests" ? (
+      {!hydrated ? (
+        <div className="rounded-[18px] border border-dashed border-line bg-surface py-20 text-center">
+          <Inbox className="mx-auto h-9 w-9 animate-pulse text-faint" />
+          <p className="mt-3 text-[14px] text-mut">Loading your requests…</p>
+        </div>
+      ) : tab === "requests" ? (
         requests.length === 0 ? <Empty /> : (
           <div className="space-y-3">
             {requests.map((r, i) => <RequestRow key={r.id} req={r} index={i} />)}
@@ -102,11 +112,19 @@ function RequestRow({ req, index }: { req: SandboxRequest; index: number }) {
       {open && (
         <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="border-t border-line2">
           <div className="grid gap-4 p-4 sm:grid-cols-2">
-            <Detail k="Purpose" v={req.purpose === "planned-delivery" ? "Planned delivery" : "Self-paced"} />
+            {req.customerName && <Detail k="Customer" v={req.customerName} />}
             <Detail k="Submitted" v={new Date(req.submittedAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })} />
-            {req.delivery && <><Detail k="Engagement" v={req.delivery.engagement} /><Detail k="Partner" v={req.delivery.partner} /><Detail k="Dates" v={`${req.delivery.startDate} → ${req.delivery.endDate}`} /><Detail k="Attendees" v={String(req.delivery.expectedAttendees)} /></>}
+            <Detail k="Vouchers" v={String(req.quantity)} />
+            {req.neededBy && <Detail k="Needed by" v={new Date(req.neededBy).toLocaleDateString("en-US", { dateStyle: "medium" })} />}
+            {req.purpose && <Detail k="Purpose" v={req.purpose === "planned-delivery" ? "Planned delivery" : "Self-paced"} />}
+            {req.delivery && <><Detail k="Engagement" v={req.delivery.engagement} /><Detail k="Partner" v={req.delivery.partner} /><Detail k="Dates" v={`${req.delivery.startDate} → ${req.delivery.endDate}`} /></>}
           </div>
-          {req.notes && <p className="border-t border-line2 px-4 py-3 text-[13px] leading-relaxed text-mut">{req.notes}</p>}
+          {req.notes && (
+            <div className="border-t border-line2 px-4 py-3">
+              <div className="text-[11.5px] font-bold uppercase tracking-wide text-faint">Custom requirements</div>
+              <p className="mt-0.5 text-[13px] leading-relaxed text-mut">{req.notes}</p>
+            </div>
+          )}
           {req.vouchers.length > 0 && <div className="border-t border-line2 p-4"><CodeStrip codes={req.vouchers} /></div>}
           <div className="border-t border-line2 px-4 py-3">
             <Link href={`/catalog/${req.labId}`} className="inline-flex items-center gap-1 text-[13px] font-semibold text-primary hover:underline">

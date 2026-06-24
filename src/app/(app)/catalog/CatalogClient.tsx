@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, X, Zap, Check } from "lucide-react";
 import { LABS, FACETS } from "@/lib/labs";
@@ -8,6 +8,7 @@ import { usePortal, withOverride } from "@/lib/store";
 import { TYPE_META } from "@/lib/state";
 import type { Lab, Lifecycle } from "@/lib/types";
 import { LabCard } from "@/components/LabCard";
+import { RequestModal } from "@/components/request/RequestModal";
 import { cn } from "@/lib/cn";
 
 type Sort = "popular" | "az" | "ready";
@@ -26,20 +27,16 @@ export function CatalogClient() {
   const overrides = usePortal((s) => s.lifecycleOverrides);
 
   const [q, setQ] = useState("");
-  const [area, setArea] = useState<string | null>(null);
-  const [type, setType] = useState<string | null>(null);
+  const [area, setArea] = useState<string | null>(params.get("area"));
+  const [type, setType] = useState<string | null>(params.get("type"));
   const [level, setLevel] = useState<string | null>(null);
   const [life, setLife] = useState<Lifecycle | "all">("all");
   const [requestableOnly, setRequestableOnly] = useState(false);
   const [sort, setSort] = useState<Sort>("popular");
   const [mobileFilters, setMobileFilters] = useState(false);
-
-  useEffect(() => {
-    const a = params.get("area");
-    const t = params.get("type");
-    if (a) setArea(a);
-    if (t) setType(t);
-  }, [params]);
+  const [reqLab, setReqLab] = useState<Lab | null>(null);
+  const [reqOpen, setReqOpen] = useState(false);
+  const openRequest = (l: Lab) => { setReqLab(l); setReqOpen(true); };
 
   const labs = useMemo<Lab[]>(
     () => LABS.map((l) => withOverride(l, overrides)),
@@ -220,12 +217,14 @@ export function CatalogClient() {
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {filtered.map((lab, i) => (
-                <LabCard key={lab.id} lab={lab} index={i} />
+                <LabCard key={lab.id} lab={lab} index={i} onRequest={openRequest} />
               ))}
             </div>
           )}
         </div>
       </div>
+
+      {reqLab && <RequestModal lab={reqLab} open={reqOpen} onClose={() => setReqOpen(false)} />}
     </main>
   );
 }

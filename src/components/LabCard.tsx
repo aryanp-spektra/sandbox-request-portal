@@ -2,26 +2,24 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Layers, RefreshCw, Zap, Clock, Ban } from "lucide-react";
+import { ArrowUpRight, Layers, RefreshCw, Ticket, Clock, Ban } from "lucide-react";
 import type { Lab } from "@/lib/types";
 import { TYPE_META, lifecycleConfig } from "@/lib/state";
+import { SNAPSHOT_AT } from "@/lib/labs";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
-
-const OUTCOME_ICON = { instant: Zap, held: Clock, blocked: Ban, "coming-soon": Clock } as const;
 
 function refreshLabel(iso: string | null) {
   if (!iso) return "Not yet built";
-  const days = Math.round((Date.now() - new Date(iso).getTime()) / 864e5);
+  const days = Math.round((SNAPSHOT_AT - new Date(iso).getTime()) / 864e5);
   if (days <= 1) return "Refreshed today";
   if (days < 30) return `Refreshed ${days}d ago`;
   if (days < 60) return "Refreshed 1mo ago";
   return `Refreshed ${Math.round(days / 30)}mo ago`;
 }
 
-export function LabCard({ lab, index = 0 }: { lab: Lab; index?: number }) {
+export function LabCard({ lab, index = 0, onRequest }: { lab: Lab; index?: number; onRequest?: (lab: Lab) => void }) {
   const meta = TYPE_META[lab.type];
   const cfg = lifecycleConfig(lab.lifecycle);
-  const OutcomeIcon = OUTCOME_ICON[cfg.outcome];
 
   return (
     <motion.div
@@ -81,25 +79,25 @@ export function LabCard({ lab, index = 0 }: { lab: Lab; index?: number }) {
             </div>
           )}
 
-          <div className="mt-auto flex items-center justify-between border-t border-line2 pt-3.5">
+          <div className="mt-auto flex items-center justify-between gap-2 border-t border-line2 pt-3.5">
             <span className="flex items-center gap-1.5 text-[12px] font-medium text-faint">
               <RefreshCw className="h-3.5 w-3.5" />
               {refreshLabel(lab.lastRefresh)}
             </span>
-            <span
-              className="flex items-center gap-1 text-[12px] font-bold"
-              style={{
-                color:
-                  cfg.outcome === "instant" ? "var(--color-ready)"
-                  : cfg.outcome === "held" ? "var(--color-held)"
-                  : cfg.outcome === "blocked" ? "var(--color-retired)"
-                  : "var(--color-testing)",
-              }}
-            >
-              <OutcomeIcon className="h-3.5 w-3.5" />
-              {cfg.outcome === "instant" ? "Instant" : cfg.outcome === "held" ? "Held" : cfg.outcome === "blocked" ? "Retired" : "Soon"}
-              <ArrowUpRight className="h-3.5 w-3.5 text-faint transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </span>
+            {lab.requestable && onRequest ? (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onRequest(lab); }}
+                className="inline-flex flex-none items-center gap-1.5 rounded-[10px] aurora-fill px-3 py-1.5 text-[12px] font-bold text-white shadow-soft transition-all hover:brightness-105"
+              >
+                <Ticket className="h-3.5 w-3.5" /> Request voucher
+              </button>
+            ) : (
+              <span className="flex flex-none items-center gap-1 text-[12px] font-bold" style={{ color: cfg.outcome === "blocked" ? "var(--color-retired)" : "var(--color-testing)" }}>
+                {cfg.outcome === "blocked" ? <Ban className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
+                {cfg.outcome === "blocked" ? "Retired" : "Coming soon"}
+                <ArrowUpRight className="h-3.5 w-3.5 text-faint transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </span>
+            )}
           </div>
         </div>
       </Link>

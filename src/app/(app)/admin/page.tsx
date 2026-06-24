@@ -9,12 +9,11 @@ import {
 } from "lucide-react";
 import { LABS } from "@/lib/labs";
 import { usePortal, withOverride } from "@/lib/store";
-import type { Lab, Lifecycle, SandboxRequest } from "@/lib/types";
-import { lifecycleConfig, TYPE_META } from "@/lib/state";
+import type { Lab, Lifecycle } from "@/lib/types";
+import { TYPE_META } from "@/lib/state";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
 import { Countdown } from "@/components/ui/Countdown";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/cn";
 
 const LANES: Lifecycle[] = ["Ready", "InUse", "Stale", "InTesting", "Retired"];
 
@@ -32,6 +31,8 @@ export default function AdminPage() {
   const totalIssued = labs.reduce((n, l) => n + l.vouchers.issued, 0);
   const totalRedeemed = labs.reduce((n, l) => n + l.vouchers.redeemed, 0);
   const burn = totalIssued ? Math.round((totalRedeemed / totalIssued) * 100) : 0;
+  // Live SLA metric: needs the real current time, so it recomputes each render.
+  // eslint-disable-next-line react-hooks/purity
   const atRisk = held.filter((r) => r.slaDueAt && new Date(r.slaDueAt).getTime() - Date.now() < 24 * 3.6e6).length;
 
   const byLane = useMemo(() => {
@@ -50,12 +51,12 @@ export default function AdminPage() {
     return [...m.entries()].sort((a, b) => b[1] - a[1]).map(([k, v]) => ({ k, v, pct: (v / max) * 100 }));
   }, [requests]);
 
-  const markReady = (lab: Lab) => {
-    const { released } = setLifecycle(lab.id, "Ready");
-    const codes = released.reduce((n, r) => n + r.vouchers.length, 0);
+  const markReady = async (lab: Lab) => {
+    const heldForLab = requests.filter((r) => r.labId === lab.id && r.status === "held").length;
+    await setLifecycle(lab.id, "Ready");
     setToast(
-      released.length
-        ? `“${lab.title}” marked Ready, ${released.length} held request${released.length > 1 ? "s" : ""} auto-fulfilled, ${codes} vouchers issued.`
+      heldForLab
+        ? `“${lab.title}” marked Ready, ${heldForLab} held request${heldForLab > 1 ? "s" : ""} auto-fulfilled.`
         : `“${lab.title}” marked Ready.`
     );
     setTimeout(() => setToast(null), 4500);
@@ -111,7 +112,8 @@ export default function AdminPage() {
                       </div>
                       <Link href={`/catalog/${r.labId}`} className="mt-1 block truncate text-[14.5px] font-bold text-ink hover:text-primary">{r.labTitle}</Link>
                       <p className="mt-0.5 text-[12.5px] text-mut">
-                        {r.requesterName} · {r.requesterOrg} · {r.quantity} vouchers
+                        {r.requesterName} · {r.quantity} vouchers
+                        {r.customerName && <> · for <span className="font-semibold text-slate">{r.customerName}</span></>}
                       </p>
                     </div>
                     <Button size="sm" onClick={() => lab && markReady(lab)}>
@@ -171,7 +173,6 @@ export default function AdminPage() {
         </div>
         <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
           {LANES.map((lane) => {
-            const cfg = lifecycleConfig(lane);
             const items = byLane[lane];
             return (
               <div key={lane} className="flex flex-col rounded-[16px] border border-line bg-canvas/60">

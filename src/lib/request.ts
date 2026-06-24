@@ -3,19 +3,23 @@
  *
  * Live voucher generation needs a CloudLabs release, so until that lands a
  * request is routed to the CloudLabs support inbox as a prefilled email. The
- * requester portal collects the structured details (purpose, quantity, dates)
- * and this module turns them into the email. The real issuing API can later
- * replace the mailto without changing the intake form.
+ * requester portal collects a minimal set of details (quantity, when they are
+ * needed by, and any custom requirements) and this module turns them into the
+ * email. The real issuing API can later replace the mailto unchanged.
  */
-import type { Lab, VoucherPurpose, PlannedDeliveryDetails } from "./types";
+import type { Lab } from "./types";
 
 /** Support distribution list the voucher requests are routed to. */
 export const SUPPORT_EMAIL = "cloudlabs-support@spektrasystems.com";
 
 export interface VoucherRequestDetails {
   quantity: number;
-  purpose: VoucherPurpose;
-  delivery: PlannedDeliveryDetails | null;
+  /** The customer / organization the vouchers are for. */
+  customerName: string;
+  /** ISO date the requester needs the vouchers by (ETA), or "". */
+  neededBy: string;
+  /** Free-text custom requirements, e.g. duration changes (optional). */
+  customRequirements: string;
   requesterName: string;
   requesterOrg: string;
 }
@@ -35,18 +39,16 @@ function bodyLines(lab: Lab, d: VoucherRequestDetails): string[] {
     "",
     `Requested by: ${d.requesterName}`,
     `Organization: ${d.requesterOrg}`,
-    `Purpose: ${d.purpose === "planned-delivery" ? "Planned delivery" : "Self-paced"}`,
+    d.customerName.trim() ? `Customer: ${d.customerName.trim()}` : null,
     `Vouchers needed: ${d.quantity}`,
+    d.neededBy ? `Needed by: ${d.neededBy}` : null,
+    d.customRequirements.trim() ? `Custom requirements: ${d.customRequirements.trim()}` : null,
+    "",
+    "(Add any further details below before sending.)",
+    "",
+    "Thank you,",
+    d.requesterName,
   ];
-  if (d.purpose === "planned-delivery" && d.delivery) {
-    lines.push(
-      `Engagement / event: ${d.delivery.engagement}`,
-      `Partner / customer: ${d.delivery.partner}`,
-      `Dates: ${d.delivery.startDate} to ${d.delivery.endDate}`,
-      `Expected attendees: ${d.delivery.expectedAttendees}`
-    );
-  }
-  lines.push("", "Thank you,", d.requesterName);
   return lines.filter((l): l is string => l !== null);
 }
 

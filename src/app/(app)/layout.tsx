@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import { Nav } from "@/components/shell/Nav";
 import { Footer } from "@/components/shell/Footer";
+import { PortalHydrator } from "@/components/PortalHydrator";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
@@ -10,6 +11,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <>
+      <PortalHydrator />
       <Nav user={session} />
       <div className="min-h-[calc(100vh-180px)]">{children}</div>
       <Footer />
