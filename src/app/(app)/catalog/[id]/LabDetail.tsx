@@ -8,12 +8,11 @@ import {
 } from "lucide-react";
 import { LABS } from "@/lib/labs";
 import { usePortal, withOverride } from "@/lib/store";
-import { TYPE_META, showsPreview } from "@/lib/state";
+import { TYPE_META } from "@/lib/state";
 import { evaluate } from "@/lib/rules";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
 import { Button } from "@/components/ui/Button";
 import { RequestModal } from "@/components/request/RequestModal";
-import { LabPreviewButton } from "@/components/LabPreviewButton";
 
 function fmtDate(iso: string | null) {
   if (!iso) return "Not set";
@@ -176,12 +175,6 @@ export function LabDetail({ id }: { id: string }) {
                 </div>
               </div>
             </div>
-
-            {showsPreview(lab.type) && (
-              <div className="mt-4">
-                <LabPreviewButton url={lab.previewUrl} title={lab.title} comingSoon={lab.lifecycle === "InTesting"} />
-              </div>
-            )}
           </div>
         </aside>
       </div>

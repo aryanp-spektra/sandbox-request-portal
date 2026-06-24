@@ -58,8 +58,14 @@ function FyColumn({
         <p className="mt-1.5 text-[13px] italic text-faint">New for FY27, no FY26 lineage</p>
       ) : (
         <>
-          <p className="mt-1.5 text-[12px] font-semibold text-faint">{area ?? "Unspecified"}</p>
-          <p className="mt-0.5 text-[14.5px] font-bold leading-snug text-ink">{play ?? "Unspecified"}</p>
+          <div className="mt-2.5">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-faint">Solution Area</p>
+            <p className="mt-0.5 text-[13px] font-semibold text-slate">{area ?? "Unspecified"}</p>
+          </div>
+          <div className="mt-2.5">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-faint">Solution Play</p>
+            <p className="mt-0.5 text-[14.5px] font-bold leading-snug text-ink">{play ?? "Unspecified"}</p>
+          </div>
         </>
       )}
     </div>

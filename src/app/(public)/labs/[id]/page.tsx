@@ -6,9 +6,8 @@ import {
   Shuffle, Tag,
 } from "lucide-react";
 import { getLab, LABS } from "@/lib/labs";
-import { TYPE_META, lifecycleConfig, showsPreview } from "@/lib/state";
+import { TYPE_META, lifecycleConfig } from "@/lib/state";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
-import { LabPreviewButton } from "@/components/LabPreviewButton";
 import { FyMapping } from "@/components/FyMapping";
 import { RecentRecorder } from "@/components/RecentRecorder";
 
@@ -149,18 +148,14 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
         {/* sidebar */}
         <aside className="lg:relative">
           <div className="lg:sticky lg:top-24 space-y-4">
-            {showsPreview(lab.type) && (
-              <LabPreviewButton url={lab.previewUrl} title={lab.title} comingSoon={lab.lifecycle === "InTesting"} />
-            )}
-
             <div className="rounded-[16px] border border-line bg-surface p-5 shadow-soft">
               <h3 className="mb-4 flex items-center gap-2 font-display text-[15px] font-bold text-ink">
                 <BarChart3 className="h-4 w-4 text-primary" /> At a glance
               </h3>
               <dl className="space-y-3 text-[13.5px]">
                 <Fact k="Offering" v={meta.label} />
-                <Fact k="FY27 area" v={String(lab.fy27Area)} />
-                {lab.fy27Play && <Fact k="FY27 play" v={lab.fy27Play} />}
+                <Fact k="FY27 Solution Area" v={String(lab.fy27Area)} />
+                {lab.fy27Play && <Fact k="FY27 Solution Play" v={lab.fy27Play} />}
                 {lab.level && <Fact k="Level" v={lab.level} />}
                 {lab.style && <Fact k="Delivery" v={lab.style} />}
                 {lab.durationHours && <Fact k="Access" v={`${lab.durationHours}h`} />}

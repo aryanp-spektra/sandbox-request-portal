@@ -79,9 +79,10 @@ export function PublicLabCard({
           </h3>
 
           {lab.fy27Play && (
-            <p className="mb-2.5 truncate text-[11.5px] font-semibold text-primary/80" title={`FY27 solution play: ${lab.fy27Play}`}>
-              {lab.fy27Play}
-            </p>
+            <div className="mb-2.5" title={`FY27 Solution Play: ${lab.fy27Play}`}>
+              <span className="text-[9.5px] font-bold uppercase tracking-wider text-faint">FY27 Solution Play</span>
+              <p className="truncate text-[12px] font-semibold text-primary/85">{lab.fy27Play}</p>
+            </div>
           )}
 
           {/* the interest hook, the hero of this card */}

@@ -337,8 +337,8 @@ export function ExploreClient() {
 
             {/* filters */}
             <div className="mb-5 grid gap-3 rounded-[16px] border border-line bg-surface p-4 shadow-soft md:grid-cols-2 xl:grid-cols-4">
-              <Dropdown label={`${fy} area`} value={area} onChange={setArea} options={areaOptions} />
-              <Dropdown label={`${fy} play`} value={play} onChange={setPlay} options={playOptions} />
+              <Dropdown label={`${fy} Solution Area`} value={area} onChange={setArea} options={areaOptions} />
+              <Dropdown label={`${fy} Solution Play`} value={play} onChange={setPlay} options={playOptions} />
               <Dropdown label="Level" value={level} onChange={setLevel} options={FACETS.levels} />
               <Dropdown label="Offering type" value={type} onChange={setType} options={FACETS.types.map((t) => t.id)} render={(id) => TYPE_META[id as keyof typeof TYPE_META]?.label ?? id} />
             </div>
@@ -480,7 +480,10 @@ function MappingView({ onPick }: { onPick: (fy27Play: string) => void }) {
       {byArea.map(([fy26Area, items]) => (
         <section key={fy26Area}>
           <div className="mb-3.5 flex items-center gap-3">
-            <h3 className="font-display text-[19px] font-bold text-ink">{fy26Area}</h3>
+            <div>
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-faint">FY26 Solution Area</span>
+              <h3 className="font-display text-[19px] font-bold text-ink">{fy26Area}</h3>
+            </div>
             <span className="rounded-full bg-line2 px-2.5 py-0.5 text-[12px] font-bold text-slate">{items.length} mappings</span>
             <div className="h-px flex-1 bg-line" />
           </div>
@@ -492,12 +495,12 @@ function MappingView({ onPick }: { onPick: (fy27Play: string) => void }) {
                 className={cn("group grid w-full grid-cols-[1fr_auto_1fr_auto] items-center gap-4 p-4 text-left transition-colors hover:bg-line2/50", i > 0 && "border-t border-line2")}
               >
                 <div className="min-w-0">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-faint">FY26</span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-faint">FY26 Solution Play</span>
                   <p className="truncate text-[14px] font-semibold text-slate">{r.fy26Play}</p>
                 </div>
                 <ArrowRight className="h-4 w-4 flex-none text-primary" />
                 <div className="min-w-0">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-primary">FY27 · {r.fy27Area}</span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-primary">FY27 Solution Play · {r.fy27Area}</span>
                   <p className="truncate text-[14.5px] font-bold text-ink group-hover:text-primary">{r.fy27Play}</p>
                 </div>
                 <span className="flex items-center gap-1 rounded-full bg-line2 px-2.5 py-1 text-[12px] font-bold text-slate">
