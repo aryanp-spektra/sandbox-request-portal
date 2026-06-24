@@ -20,7 +20,7 @@ import { cn } from "@/lib/cn";
 
 type GroupBy = "none" | "area" | "play" | "level" | "type";
 type View = "catalog" | "mapping" | "whatsnew";
-type SortKey = "default" | "az" | "newest" | "modules";
+type SortKey = "default" | "az" | "newest" | "modules" | "duration-asc" | "duration-desc";
 type Fy = "FY27" | "FY26";
 type Density = "comfortable" | "compact";
 
@@ -29,6 +29,8 @@ const SORTS: { key: SortKey; label: string }[] = [
   { key: "newest", label: "Recently updated" },
   { key: "az", label: "A to Z" },
   { key: "modules", label: "Most modules" },
+  { key: "duration-asc", label: "Shortest first" },
+  { key: "duration-desc", label: "Longest first" },
 ];
 
 const GROUPS: { key: GroupBy; label: string }[] = [
@@ -177,6 +179,9 @@ export function ExploreClient() {
     if (sort === "az") out.sort((a, b) => a.title.localeCompare(b.title));
     else if (sort === "newest") out.sort((a, b) => ts(b.lastRefresh) - ts(a.lastRefresh));
     else if (sort === "modules") out.sort((a, b) => b.modules.length - a.modules.length);
+    // Labs without a stated duration always sort to the end, either direction.
+    else if (sort === "duration-asc") out.sort((a, b) => (a.durationHours ?? Infinity) - (b.durationHours ?? Infinity));
+    else if (sort === "duration-desc") out.sort((a, b) => (b.durationHours ?? -Infinity) - (a.durationHours ?? -Infinity));
     return out;
   }, [q, area, play, level, type, status, product, sort, areaOf, playOf]);
 
@@ -239,7 +244,7 @@ export function ExploreClient() {
         <div className="wrap-wide pt-12 pb-8">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-[12px] font-semibold text-primary">
-              <Sparkles className="h-3.5 w-3.5" /> FY27 catalog, refreshed for Build 2026
+              <Sparkles className="h-3.5 w-3.5" /> FY27 catalog, Build 2026 roadmap
             </div>
             <span className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-faint">
               <History className="h-3.5 w-3.5" />
@@ -251,7 +256,7 @@ export function ExploreClient() {
           </h1>
           <p className="mt-3 max-w-[640px] text-[16px] leading-relaxed text-mut">
             Every guided lab, hackathon and sandbox we offer, mapped from FY26 to the FY27 solution
-            plays. Filter by area, play, level or technology, see what changed for Build 2026, and
+            plays. Filter by area, play, level or technology, see what is planned for Build 2026, and
             take it with you as Excel or PDF.
           </p>
 
@@ -259,7 +264,7 @@ export function ExploreClient() {
             <Metric value={LABS.length} label="Total labs" />
             <Metric value={FACETS.fy27Areas.length} label="FY27 areas" />
             <Metric value={FACETS.fy27Plays.length} label="FY27 plays" />
-            <Metric value={changed.length} label="Changed in Build 2026" />
+            <Metric value={changed.length} label="Planned for Build 2026" />
           </div>
         </div>
       </section>
@@ -270,7 +275,7 @@ export function ExploreClient() {
           <div className="inline-flex rounded-[12px] border border-line bg-line2 p-1">
             <ViewTab active={view === "catalog"} onClick={() => setView("catalog")} icon={LayoutGrid}>Catalog</ViewTab>
             <ViewTab active={view === "mapping"} onClick={() => setView("mapping")} icon={Shuffle}>FY26 to FY27 map</ViewTab>
-            <ViewTab active={view === "whatsnew"} onClick={() => setView("whatsnew")} icon={Wand2}>What&apos;s new</ViewTab>
+            <ViewTab active={view === "whatsnew"} onClick={() => setView("whatsnew")} icon={Wand2}>Build 2026 roadmap</ViewTab>
           </div>
 
           <div className="ml-auto flex items-center gap-2">
@@ -692,21 +697,22 @@ function WhatsNew({ labs }: { labs: Lab[] }) {
   return (
     <div className="space-y-9">
       <div className="rounded-[16px] border border-line bg-gradient-to-br from-[#f5f3ff] to-surface p-6 dark:from-[#1a1638]">
-        <h2 className="font-display text-[22px] font-extrabold text-ink">What changed for Build 2026</h2>
-        <p className="mt-1.5 max-w-[640px] text-[14px] text-mut">
-          A release-over-release view of the catalog. New tracks coming online, existing labs getting
-          Build 2026 enhancements, and tracks being retired so you always know what is current.
+        <h2 className="font-display text-[22px] font-extrabold text-ink">What is planned for Build 2026</h2>
+        <p className="mt-1.5 max-w-[660px] text-[14px] text-mut">
+          The proposed roadmap for the Build 2026 refresh: new tracks planned, enhancements proposed
+          for existing labs, and tracks set to retire. This is the plan. The work is not done yet, so
+          these are commitments for the upcoming cycle rather than changes already shipped.
         </p>
         <div className="mt-4 flex flex-wrap gap-6">
-          <Metric value={fresh.length} label="New tracks" />
-          <Metric value={enhanced.length} label="Enhanced labs" />
+          <Metric value={fresh.length} label="New tracks planned" />
+          <Metric value={enhanced.length} label="Enhancements planned" />
           <Metric value={retiring.length} label="Retiring" />
         </div>
       </div>
 
-      <ChangeGroup title="New tracks" tone="InTesting" labs={fresh} field={(l) => l.hook} />
-      <ChangeGroup title="Enhanced for Build 2026" tone="Ready" labs={enhanced} field={(l) => l.enhancements ?? ""} />
-      <ChangeGroup title="Retiring from the catalog" tone="Retired" labs={retiring} field={() => "Being retired. Plan replacements before it is removed."} />
+      <ChangeGroup title="New tracks planned" tone="InTesting" labs={fresh} field={(l) => l.hook} />
+      <ChangeGroup title="Enhancements proposed for existing labs" tone="InTesting" labs={enhanced} field={(l) => l.enhancements ?? ""} />
+      <ChangeGroup title="Retiring from the catalog" tone="Retired" labs={retiring} field={() => "Planned for retirement. Plan replacements before it is removed."} />
     </div>
   );
 }

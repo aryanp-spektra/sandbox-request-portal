@@ -24,7 +24,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
           <span className="hidden items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] font-semibold text-mut sm:inline-flex">
             <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-ready)" }} />
-            {LABS.length} labs, updated for Build 2026
+            {LABS.length} labs in the FY27 catalog
           </span>
           <ThemeToggle />
           <Link

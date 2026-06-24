@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { LABS } from "@/lib/labs";
 import { usePortal, withOverride } from "@/lib/store";
-import { TYPE_META } from "@/lib/state";
+import { TYPE_META, showsPreview } from "@/lib/state";
 import { evaluate } from "@/lib/rules";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
 import { Button } from "@/components/ui/Button";
@@ -177,9 +177,11 @@ export function LabDetail({ id }: { id: string }) {
               </div>
             </div>
 
-            <div className="mt-4">
-              <LabPreviewButton url={lab.previewUrl} title={lab.title} />
-            </div>
+            {showsPreview(lab.type) && (
+              <div className="mt-4">
+                <LabPreviewButton url={lab.previewUrl} title={lab.title} comingSoon={lab.lifecycle === "InTesting"} />
+              </div>
+            )}
           </div>
         </aside>
       </div>

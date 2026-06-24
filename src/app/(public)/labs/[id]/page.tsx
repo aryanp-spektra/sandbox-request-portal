@@ -6,7 +6,7 @@ import {
   Shuffle, Tag,
 } from "lucide-react";
 import { getLab, LABS } from "@/lib/labs";
-import { TYPE_META, lifecycleConfig } from "@/lib/state";
+import { TYPE_META, lifecycleConfig, showsPreview } from "@/lib/state";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
 import { LabPreviewButton } from "@/components/LabPreviewButton";
 import { FyMapping } from "@/components/FyMapping";
@@ -115,10 +115,13 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
           )}
 
           {lab.enhancements && (
-            <Section title="What changed in Build 2026">
+            <Section title="Planned for Build 2026">
               <div className="flex gap-3 rounded-[14px] border border-violet/20 bg-violet/5 p-4">
                 <Wand2 className="mt-0.5 h-5 w-5 flex-none text-violet" />
-                <p className="text-[14px] leading-relaxed text-slate">{lab.enhancements}</p>
+                <div>
+                  <p className="mb-1 text-[12px] font-bold uppercase tracking-wide text-violet">Proposed enhancement, not yet applied</p>
+                  <p className="text-[14px] leading-relaxed text-slate">{lab.enhancements}</p>
+                </div>
               </div>
             </Section>
           )}
@@ -146,7 +149,9 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
         {/* sidebar */}
         <aside className="lg:relative">
           <div className="lg:sticky lg:top-24 space-y-4">
-            <LabPreviewButton url={lab.previewUrl} title={lab.title} />
+            {showsPreview(lab.type) && (
+              <LabPreviewButton url={lab.previewUrl} title={lab.title} comingSoon={lab.lifecycle === "InTesting"} />
+            )}
 
             <div className="rounded-[16px] border border-line bg-surface p-5 shadow-soft">
               <h3 className="mb-4 flex items-center gap-2 font-display text-[15px] font-bold text-ink">

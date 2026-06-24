@@ -1,11 +1,12 @@
-import { PlayCircle, ExternalLink, Lock } from "lucide-react";
+import { PlayCircle, ExternalLink, Lock, Clock } from "lucide-react";
 
 /**
  * Links out to the external lab-guide preview. When no URL is configured yet
- * (previewUrl === null) it renders a clear "coming soon" state instead of a
- * dead link, so the slot is ready the moment guide URLs are supplied.
+ * (previewUrl === null) it renders a clear placeholder instead of a dead link,
+ * so the slot is ready the moment guide URLs are supplied. For tracks that are
+ * still being built (comingSoon), it says so rather than promising a link.
  */
-export function LabPreviewButton({ url, title }: { url: string | null; title: string }) {
+export function LabPreviewButton({ url, title, comingSoon = false }: { url: string | null; title: string; comingSoon?: boolean }) {
   if (url) {
     return (
       <a
@@ -19,6 +20,17 @@ export function LabPreviewButton({ url, title }: { url: string | null; title: st
         Preview the lab guide
         <ExternalLink className="h-4 w-4 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
       </a>
+    );
+  }
+  if (comingSoon) {
+    return (
+      <div className="rounded-[16px] border border-dashed border-violet/30 bg-violet/5 p-4 text-center">
+        <span className="mx-auto mb-2 grid h-10 w-10 place-items-center rounded-full bg-violet/10">
+          <Clock className="h-5 w-5 text-violet" />
+        </span>
+        <p className="text-[13.5px] font-bold text-ink">Lab guide preview, coming soon</p>
+        <p className="mt-0.5 text-[12.5px] text-mut">This track is still being built. Its guide preview will appear here once the lab is ready.</p>
+      </div>
     );
   }
   return (

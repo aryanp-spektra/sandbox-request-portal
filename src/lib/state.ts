@@ -103,3 +103,10 @@ export const STATUS_TO_LIFECYCLE: Record<CatalogStatus, Lifecycle[]> = {
 export function lifecycleConfig(state: Lifecycle): StateConfig {
   return LIFECYCLE[state];
 }
+
+/** Offering types that have a lab-guide preview. Others show no preview slot. */
+export const PREVIEW_TYPES: LabType[] = ["guided-lab", "gps-skilling"];
+
+export function showsPreview(type: LabType): boolean {
+  return PREVIEW_TYPES.includes(type);
+}
