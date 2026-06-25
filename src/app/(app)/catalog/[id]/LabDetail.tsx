@@ -11,6 +11,7 @@ import { usePortal, withOverride } from "@/lib/store";
 import { TYPE_META } from "@/lib/state";
 import { evaluate } from "@/lib/rules";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
+import { StarButton } from "@/components/StarButton";
 import { Button } from "@/components/ui/Button";
 import { RequestModal } from "@/components/request/RequestModal";
 
@@ -19,7 +20,7 @@ function fmtDate(iso: string | null) {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-export function LabDetail({ id }: { id: string }) {
+export function LabDetail({ id, initialStars = 0 }: { id: string; initialStars?: number }) {
   const overrides = usePortal((s) => s.lifecycleOverrides);
   const base = LABS.find((l) => l.id === id)!;
   const lab = useMemo(() => withOverride(base, overrides), [base, overrides]);
@@ -35,9 +36,12 @@ export function LabDetail({ id }: { id: string }) {
       {/* header band */}
       <div className="deep relative overflow-hidden">
         <div className="wrap relative z-10 py-9">
-          <Link href="/catalog" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 transition-colors hover:text-white">
-            <ArrowLeft className="h-4 w-4" /> Back to catalog
-          </Link>
+          <div className="flex items-center justify-between gap-3">
+            <Link href="/catalog" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 transition-colors hover:text-white">
+              <ArrowLeft className="h-4 w-4" /> Back to catalog
+            </Link>
+            <StarButton labId={lab.id} initialCount={initialStars} tone="dark" />
+          </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-2.5">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[12px] font-bold uppercase tracking-wide text-white backdrop-blur">
@@ -45,15 +49,15 @@ export function LabDetail({ id }: { id: string }) {
             </span>
             <LifecycleBadge state={lab.lifecycle} />
             {lab.isNew && (
-              <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-cyan-200 backdrop-blur">New</span>
+              <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-violet-200 backdrop-blur">New</span>
             )}
           </div>
 
           <h1 className="mt-4 max-w-[820px] font-display text-[clamp(26px,4vw,42px)] font-extrabold leading-tight tracking-tight text-white">
             {lab.title}
           </h1>
-          <p className="mt-3 flex items-start gap-2 text-[15px] font-medium leading-relaxed text-cyan-100/90">
-            <Sparkles className="mt-1 h-4 w-4 flex-none" />
+          <p className="mt-3 flex items-start gap-2 text-[15px] font-medium leading-relaxed text-white/85">
+            <Sparkles className="mt-1 h-4 w-4 flex-none text-violet-200" />
             {lab.hook}
           </p>
           <p className="mt-2 text-[13.5px] font-medium text-white/55">
