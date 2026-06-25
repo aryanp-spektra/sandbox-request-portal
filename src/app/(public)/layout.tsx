@@ -7,7 +7,10 @@ import { BrandLockup } from "@/components/Brand";
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-line glass">
+      <header
+        className="sticky top-0 z-50 border-b border-line/60 backdrop-blur-xl"
+        style={{ background: "color-mix(in srgb, var(--color-surface) 58%, transparent)" }}
+      >
         <div className="wrap-wide flex h-16 items-center gap-4">
           <Link href="/" className="flex items-center gap-2.5" aria-label="Microsoft Sandbox Lab Catalog, home">
             <BrandLockup height={30} />
@@ -22,10 +25,13 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
           <div className="flex-1" />
 
-          <span className="hidden items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] font-semibold text-mut sm:inline-flex">
+          <Link
+            href="/explore"
+            className="hidden items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] font-semibold text-mut transition-colors hover:border-[#cdd2e2] hover:text-slate sm:inline-flex"
+          >
             <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-ready)" }} />
             {LABS.length} labs in the FY27 catalog
-          </span>
+          </Link>
           <ThemeToggle />
           <Link
             href="/portal"

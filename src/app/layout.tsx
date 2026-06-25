@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Sora, Inter } from "next/font/google";
+import { Lato } from "next/font/google";
 import "./globals.css";
 
-const sora = Sora({ subsets: ["latin"], variable: "--font-sora", weight: ["400", "600", "700", "800"] });
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const lato = Lato({ subsets: ["latin"], variable: "--font-lato", weight: ["300", "400", "700", "900"] });
 
 export const metadata: Metadata = {
   title: "Sandbox Portal, Microsoft Sandbox by CloudLabs",
@@ -23,7 +22,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${sora.variable} ${inter.variable} h-full antialiased`}
+      className={`${lato.variable} h-full antialiased`}
     >
       <head>
         {/* set theme before paint to avoid a flash of the wrong mode */}

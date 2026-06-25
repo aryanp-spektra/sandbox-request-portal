@@ -4,105 +4,108 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ════════════════════════════════════════════════════════════════════════
-   SANDBOX PORTAL, "Aurora" design system
-   Deep-ink base · indigo→violet→cyan signature gradient · Sora + Inter
+   SANDBOX PORTAL — CloudLabs design system
+   Charcoal-black base · violet brand · Sora + Inter
    ════════════════════════════════════════════════════════════════════════ */
 
 @theme {
-  --font-display: var(--font-sora), system-ui, sans-serif;
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-lato), 'Helvetica Neue', Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-lato), 'Helvetica Neue', Arial, ui-sans-serif, system-ui, sans-serif;
 
-  /* neutrals */
-  --color-ink: #0a0e1a;
-  --color-ink2: #131a30;
-  --color-canvas: #f6f7fb;
+  /* neutrals — matches CloudLabs light portal palette */
+  --color-ink: #111118;
+  --color-ink2: #1e1e28;
+  --color-canvas: #f0f0f4;
   --color-surface: #ffffff;
-  --color-line: #e9ebf3;
-  --color-line2: #f1f3f9;
-  --color-slate: #424b61;
-  --color-mut: #6b7392;
-  --color-faint: #9aa1b9;
+  --color-line: #e2e2e8;
+  --color-line2: #ebebf0;
+  --color-slate: #3a3a48;
+  --color-mut: #68687a;
+  --color-faint: #96969e;
 
-  /* brand */
-  --color-primary: #4f46e5;
-  --color-primary-600: #4338ca;
-  --color-violet: #7c3aed;
-  --color-cyan: #06b6d4;
+  /* brand — CloudLabs violet */
+  --color-primary: oklch(53.088% 0.17892 282.981);
+  --color-primary-600: oklch(45% 0.18 283);
+  --color-violet: oklch(46% 0.20 283);
+  --color-purple-light: oklch(72% 0.15 283);
   --color-sky: #2563eb;
 
-  /* lifecycle semantics */
-  --color-ready: #059669;
-  --color-inuse: #2563eb;
-  --color-held: #d97706;
-  --color-testing: #7c3aed;
-  --color-retired: #64748b;
+  /* lifecycle semantics — muted, readable */
+  --color-ready: #2d7a5f;
+  --color-inuse: #3460a0;
+  --color-held: #9a6520;
+  --color-testing: oklch(42% 0.13 283);
+  --color-retired: #5a5a6a;
 
   --radius-xl: 20px;
   --radius-lg: 16px;
   --radius-md: 11px;
 
-  --shadow-soft: 0 1px 2px rgba(10, 14, 26, 0.04), 0 4px 16px rgba(10, 14, 26, 0.05);
-  --shadow-card: 0 1px 3px rgba(10, 14, 26, 0.05), 0 10px 30px rgba(10, 14, 26, 0.07);
-  --shadow-lift: 0 24px 60px rgba(48, 38, 120, 0.18);
-  --shadow-glow: 0 12px 32px rgba(79, 70, 229, 0.32);
+  --shadow-soft: 0 1px 2px rgba(13, 13, 15, 0.04), 0 4px 16px rgba(13, 13, 15, 0.05);
+  --shadow-card: 0 1px 3px rgba(13, 13, 15, 0.05), 0 10px 30px rgba(13, 13, 15, 0.07);
+  --shadow-lift: 0 24px 60px rgba(80, 40, 160, 0.18);
+  --shadow-glow: 0 12px 32px oklch(53.088% 0.17892 282.981 / 0.18);
 }
 
 :root {
-  --aurora: linear-gradient(120deg, #6366f1 0%, #8b5cf6 45%, #22d3ee 100%);
-  --aurora-soft: linear-gradient(120deg, #818cf8, #a78bfa, #67e8f9);
+  --aurora: linear-gradient(120deg, oklch(53.088% 0.17892 282.981) 0%, oklch(46% 0.20 283) 55%, oklch(65% 0.16 290) 100%);
+  --aurora-soft: linear-gradient(120deg, oklch(72% 0.14 283), oklch(78% 0.12 285), oklch(82% 0.10 288));
 
-  --st-ready-bg: #ecfdf5;   --st-ready-ink: #047857;   --st-ready-bd: #a7f3d0;
-  --st-inuse-bg: #eff6ff;   --st-inuse-ink: #1d4ed8;   --st-inuse-bd: #bfdbfe;
-  --st-held-bg: #fffbeb;    --st-held-ink: #b45309;    --st-held-bd: #fde68a;
-  --st-testing-bg: #f5f3ff; --st-testing-ink: #6d28d9; --st-testing-bd: #ddd6fe;
-  --st-retired-bg: #f1f5f9; --st-retired-ink: #64748b; --st-retired-bd: #e2e8f0;
+  /* state badges — desaturated, minimal */
+  --st-ready-bg: #f0f5f2;   --st-ready-ink: #2d7a5f;   --st-ready-bd: #c4d9d0;
+  --st-inuse-bg: #f0f3f8;   --st-inuse-ink: #3460a0;   --st-inuse-bd: #c2cedf;
+  --st-held-bg: #f7f3ec;    --st-held-ink: #9a6520;    --st-held-bd: #ddd0b4;
+  --st-testing-bg: #f3f1f7; --st-testing-ink: #5a4480; --st-testing-bd: #d0c8e0;
+  --st-retired-bg: #f3f3f5; --st-retired-ink: #5a5a6a; --st-retired-bd: #d4d4dc;
 }
 
 /* ── dark theme ──────────────────────────────────────────────────────────
-   Deep indigo-ink surfaces, brighter brand + lifted text for contrast.
+   CloudLabs charcoal-black surfaces, purple brand + lifted text for contrast.
    Overrides the same --color-* tokens so every Tailwind utility adapts.   */
 .dark {
-  --color-ink: #eef0f8;
-  --color-ink2: #c9cee0;
-  --color-canvas: #080b16;
-  --color-surface: #121830;
-  --color-line: #28304d;
-  --color-line2: #1a2138;
-  --color-slate: #c2c8db;
-  --color-mut: #9298b4;
-  --color-faint: #6c7396;
+  --color-ink: #f0f0f4;
+  --color-ink2: #c8c8d4;
+  --color-canvas: #0a0a0d;
+  --color-surface: #111116;
+  --color-line: #222228;
+  --color-line2: #18181e;
+  --color-slate: #c0c0cc;
+  --color-mut: #8e8ea0;
+  --color-faint: #5e5e70;
 
-  --color-primary: #818cf8;
-  --color-primary-600: #6366f1;
-  --color-sky: #60a5fa;
+  --color-primary: oklch(68% 0.11 283);
+  --color-primary-600: oklch(58% 0.13 283);
+  --color-sky: #5888c0;
 
-  --color-ready: #34d399;
-  --color-inuse: #60a5fa;
-  --color-held: #fbbf24;
-  --color-testing: #a78bfa;
-  --color-retired: #94a3b8;
+  /* dark mode semantic — muted, easy on the eyes */
+  --color-ready: #4a8c72;
+  --color-inuse: #5578a8;
+  --color-held: #9a7840;
+  --color-testing: oklch(65% 0.10 283);
+  --color-retired: #7a7a8a;
 
-  --aurora: linear-gradient(120deg, #818cf8 0%, #a78bfa 45%, #22d3ee 100%);
-  --aurora-soft: linear-gradient(120deg, #a5b4fc, #c4b5fd, #a5f3fc);
+  --aurora: linear-gradient(120deg, oklch(58% 0.13 283) 0%, oklch(50% 0.15 283) 55%, oklch(62% 0.10 288) 100%);
+  --aurora-soft: linear-gradient(120deg, oklch(68% 0.09 283), oklch(73% 0.07 285), oklch(77% 0.06 288));
 
-  --st-ready-bg: rgba(5, 150, 105, 0.16);   --st-ready-ink: #6ee7b7;   --st-ready-bd: rgba(16, 185, 129, 0.32);
-  --st-inuse-bg: rgba(37, 99, 235, 0.18);   --st-inuse-ink: #93c5fd;   --st-inuse-bd: rgba(59, 130, 246, 0.34);
-  --st-held-bg: rgba(217, 119, 6, 0.16);    --st-held-ink: #fcd34d;    --st-held-bd: rgba(245, 158, 11, 0.34);
-  --st-testing-bg: rgba(124, 58, 237, 0.18); --st-testing-ink: #c4b5fd; --st-testing-bd: rgba(139, 92, 246, 0.34);
-  --st-retired-bg: rgba(100, 116, 139, 0.18); --st-retired-ink: #cbd5e1; --st-retired-bd: rgba(100, 116, 139, 0.34);
+  /* dark mode state badges — low-opacity, muted inks */
+  --st-ready-bg: rgba(45, 122, 95, 0.14);    --st-ready-ink: #7ab89a;   --st-ready-bd: rgba(45, 122, 95, 0.25);
+  --st-inuse-bg: rgba(52, 96, 160, 0.14);    --st-inuse-ink: #7a9ec8;   --st-inuse-bd: rgba(52, 96, 160, 0.25);
+  --st-held-bg: rgba(154, 101, 32, 0.14);    --st-held-ink: #c0a060;    --st-held-bd: rgba(154, 101, 32, 0.25);
+  --st-testing-bg: oklch(42% 0.13 283 / 0.14); --st-testing-ink: oklch(72% 0.09 283); --st-testing-bd: oklch(42% 0.13 283 / 0.25);
+  --st-retired-bg: rgba(90, 90, 106, 0.14);  --st-retired-ink: #a0a0b0;  --st-retired-bd: rgba(90, 90, 106, 0.25);
 
-  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.45);
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.5), 0 10px 30px rgba(0, 0, 0, 0.5);
-  --shadow-lift: 0 24px 60px rgba(0, 0, 0, 0.6);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.55);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.6), 0 10px 30px rgba(0, 0, 0, 0.6);
+  --shadow-lift: 0 24px 60px rgba(0, 0, 0, 0.7);
 }
 
 .dark .glass {
-  background: rgba(10, 14, 28, 0.72);
+  background: rgba(10, 10, 14, 0.72);
 }
 
-.dark .skeleton { background: #1a2138; }
-.dark ::-webkit-scrollbar-thumb { background: #2a3354; }
-.dark ::-webkit-scrollbar-thumb:hover { background: #36406a; }
+.dark .skeleton { background: #1c1c22; }
+.dark ::-webkit-scrollbar-thumb { background: #303038; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #404048; }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -116,9 +119,9 @@ body {
   text-rendering: optimizeLegibility;
 }
 a { color: inherit; text-decoration: none; }
-::selection { background: rgba(124, 58, 237, 0.18); }
+::selection { background: oklch(53.088% 0.17892 282.981 / 0.2); }
 
-h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0.025em; }
 
 /* layout container */
 .wrap { max-width: 1280px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
@@ -133,14 +136,29 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
 }
 .aurora-fill { background: var(--aurora); }
 
-/* deep hero with aurora mesh + grain */
+/* solid deep-violet brand fill for primary actions — white text reads crisp */
+.brand-fill { background: linear-gradient(180deg, var(--color-primary), var(--color-primary-600)); }
+
+/* subtle brand-tinted field — a barely-there purple hairline + soft glow.
+   Used on the catalog search and filter panel so they lift off the canvas
+   without looking flashy. */
+.brand-edge {
+  border-color: color-mix(in srgb, var(--color-primary) 20%, var(--color-line));
+  box-shadow: var(--shadow-soft), 0 8px 24px color-mix(in srgb, var(--color-primary) 9%, transparent);
+}
+.brand-edge:focus-within {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-line));
+  box-shadow: var(--shadow-soft), 0 0 0 4px color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+
+/* deep hero — subtle purple wash, not a light show */
 .deep {
   position: relative;
   background:
-    radial-gradient(1100px 520px at 78% -10%, rgba(99, 102, 241, 0.55), transparent 55%),
-    radial-gradient(820px 520px at 8% 6%, rgba(34, 211, 238, 0.32), transparent 52%),
-    radial-gradient(700px 480px at 50% 120%, rgba(139, 92, 246, 0.40), transparent 60%),
-    linear-gradient(180deg, #070b18, #0c1226 60%, #0a0f20);
+    radial-gradient(1100px 520px at 78% -10%, oklch(53.088% 0.17892 282.981 / 0.22), transparent 55%),
+    radial-gradient(820px 520px at 8% 6%, oklch(46% 0.15 283 / 0.14), transparent 52%),
+    radial-gradient(700px 480px at 50% 120%, oklch(40% 0.13 283 / 0.18), transparent 60%),
+    linear-gradient(180deg, #08080b, #0f0f14 60%, #0c0c10);
 }
 .deep::before {
   content: "";
@@ -150,7 +168,7 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
   background-size: 24px 24px;
   -webkit-mask-image: radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 75%);
   mask-image: radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 75%);
-  opacity: 0.6;
+  opacity: 0.3;
   pointer-events: none;
 }
 
@@ -161,7 +179,7 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
   -webkit-backdrop-filter: saturate(150%) blur(14px);
 }
 .glass-dark {
-  background: rgba(12, 17, 34, 0.55);
+  background: rgba(10, 10, 14, 0.58);
   backdrop-filter: saturate(160%) blur(14px);
   -webkit-backdrop-filter: saturate(160%) blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.08);

@@ -240,10 +240,41 @@ export function ExploreClient() {
   return (
     <main>
       {/* ── intro band ── */}
-      <section className="border-b border-line bg-gradient-to-b from-[#f0f2fb] to-canvas dark:from-[#10162c]">
-        <div className="wrap-wide pt-12 pb-8">
+      <section className="relative overflow-hidden border-b border-line">
+        {/* layered brand wash — soft violet mesh fading into the canvas */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-20"
+          style={{
+            background:
+              "radial-gradient(1000px 480px at 16% -25%, color-mix(in srgb, var(--color-primary) 24%, transparent), transparent 60%), radial-gradient(720px 460px at 93% -15%, color-mix(in srgb, var(--color-primary) 15%, transparent), transparent 58%), radial-gradient(640px 520px at 72% 135%, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 62%), linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 6%, var(--color-surface)), var(--color-canvas) 80%)",
+          }}
+        />
+        {/* fine dot-grid texture, masked so it only whispers near the top */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{
+            backgroundImage:
+              "radial-gradient(color-mix(in srgb, var(--color-primary) 28%, transparent) 1px, transparent 1px)",
+            backgroundSize: "22px 22px",
+            maskImage: "radial-gradient(120% 78% at 28% -10%, #000 22%, transparent 70%)",
+            WebkitMaskImage: "radial-gradient(120% 78% at 28% -10%, #000 22%, transparent 70%)",
+            opacity: 0.45,
+          }}
+        />
+        {/* glossy floating orb, blurred for a premium sheen */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 -top-28 -z-10 h-80 w-80 rounded-full blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle, color-mix(in srgb, var(--color-primary) 36%, transparent), transparent 70%)",
+          }}
+        />
+        <div className="wrap-wide relative pt-12 pb-8">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-[12px] font-semibold text-primary">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--color-primary)_30%,var(--color-line))] bg-surface/80 px-3 py-1 text-[12px] font-semibold text-primary shadow-soft backdrop-blur">
               <Sparkles className="h-3.5 w-3.5" /> FY27 catalog, Build 2026 roadmap
             </div>
             <span className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-faint">
@@ -252,7 +283,7 @@ export function ExploreClient() {
             </span>
           </div>
           <h1 className="mt-4 max-w-[760px] font-display text-[clamp(30px,4.5vw,46px)] font-extrabold leading-[1.08] tracking-tight text-ink">
-            Explore the Microsoft Sandbox catalog
+            Explore the Microsoft Sandbox <span className="aurora-text">catalog</span>
           </h1>
           <p className="mt-3 max-w-[640px] text-[16px] leading-relaxed text-mut">
             Every guided lab, hackathon and sandbox we offer, mapped from FY26 to the FY27 solution
@@ -287,7 +318,7 @@ export function ExploreClient() {
         {view === "catalog" ? (
           <>
             {/* search */}
-            <div className="flex items-center gap-2 rounded-[13px] border border-line bg-surface px-4 shadow-soft focus-within:border-primary">
+            <div className="brand-edge flex items-center gap-2 rounded-[13px] border bg-surface px-4">
               <Search className="h-5 w-5 text-faint" />
               <input
                 ref={searchRef}
@@ -336,7 +367,7 @@ export function ExploreClient() {
             </div>
 
             {/* filters */}
-            <div className="mb-5 grid gap-3 rounded-[16px] border border-line bg-surface p-4 shadow-soft md:grid-cols-2 xl:grid-cols-4">
+            <div className="brand-edge mb-5 grid gap-3 rounded-[16px] border bg-surface p-4 md:grid-cols-2 xl:grid-cols-4">
               <Dropdown label={`${fy} Solution Area`} value={area} onChange={setArea} options={areaOptions} />
               <Dropdown label={`${fy} Solution Play`} value={play} onChange={setPlay} options={playOptions} />
               <Dropdown label="Level" value={level} onChange={setLevel} options={FACETS.levels} />
@@ -469,7 +500,7 @@ function MappingView({ onPick }: { onPick: (fy27Play: string) => void }) {
 
   return (
     <div className="space-y-9">
-      <div className="rounded-[16px] border border-line bg-gradient-to-br from-[#f5f3ff] to-surface p-6 dark:from-[#1a1638]">
+      <div className="rounded-[16px] border border-line bg-gradient-to-br from-[color-mix(in_srgb,var(--color-primary)_8%,var(--color-surface))] to-surface p-6">
         <h2 className="font-display text-[22px] font-extrabold text-ink">FY26 to FY27 solution mapping</h2>
         <p className="mt-1.5 max-w-[680px] text-[14px] text-mut">
           How each FY26 solution play maps to the FY27 taxonomy. If you know a lab by its FY26 play,
@@ -699,7 +730,7 @@ function WhatsNew({ labs }: { labs: Lab[] }) {
 
   return (
     <div className="space-y-9">
-      <div className="rounded-[16px] border border-line bg-gradient-to-br from-[#f5f3ff] to-surface p-6 dark:from-[#1a1638]">
+      <div className="rounded-[16px] border border-line bg-gradient-to-br from-[color-mix(in_srgb,var(--color-primary)_8%,var(--color-surface))] to-surface p-6">
         <h2 className="font-display text-[22px] font-extrabold text-ink">What is planned for Build 2026</h2>
         <p className="mt-1.5 max-w-[660px] text-[14px] text-mut">
           The proposed roadmap for the Build 2026 refresh: new tracks planned, enhancements proposed
@@ -786,13 +817,16 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
   );
 }
 
+// Lowercase a label for the "Any …" placeholder, but keep FY26/FY27 in caps.
+const softLabel = (s: string) => s.toLowerCase().replace(/\bfy(\d{2})\b/g, (_, d) => `FY${d}`);
+
 function Dropdown({ label, value, onChange, options, render }: { label: string; value: string | null; onChange: (v: string | null) => void; options: string[]; render?: (v: string) => string }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
       <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-faint">{label}</span>
-      <button onClick={() => setOpen((o) => !o)} onBlur={() => setTimeout(() => setOpen(false), 150)} aria-haspopup="listbox" aria-expanded={open} aria-label={`${label}: ${value ?? `any ${label.toLowerCase()}`}`} className="flex w-full items-center justify-between gap-2 rounded-[10px] border border-line bg-surface px-3 py-2.5 text-left text-[13.5px] font-semibold text-ink transition-colors hover:border-[#cdd2e2]">
-        <span className={cn("truncate", !value && "text-faint font-medium")}>{value ? (render ? render(value) : value) : `Any ${label.toLowerCase()}`}</span>
+      <button onClick={() => setOpen((o) => !o)} onBlur={() => setTimeout(() => setOpen(false), 150)} aria-haspopup="listbox" aria-expanded={open} aria-label={`${label}: ${value ?? `any ${softLabel(label)}`}`} className="flex w-full items-center justify-between gap-2 rounded-[10px] border border-line bg-surface px-3 py-2.5 text-left text-[13.5px] font-semibold text-ink transition-colors hover:border-[#cdd2e2]">
+        <span className={cn("truncate", !value && "text-faint font-medium")}>{value ? (render ? render(value) : value) : `Any ${softLabel(label)}`}</span>
         <ChevronDown className={cn("h-4 w-4 flex-none text-faint transition-transform", open && "rotate-180")} />
       </button>
       <AnimatePresence>
@@ -801,7 +835,7 @@ function Dropdown({ label, value, onChange, options, render }: { label: string; 
             initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.14 }}
             className="absolute z-30 mt-1.5 max-h-[280px] w-full overflow-y-auto rounded-[12px] border border-line bg-surface p-1.5 shadow-[var(--shadow-lift)]"
           >
-            <Option label={`Any ${label.toLowerCase()}`} active={!value} onClick={() => { onChange(null); setOpen(false); }} />
+            <Option label={`Any ${softLabel(label)}`} active={!value} onClick={() => { onChange(null); setOpen(false); }} />
             {options.map((o) => (
               <Option key={o} label={render ? render(o) : o} active={value === o} onClick={() => { onChange(o); setOpen(false); }} />
             ))}
