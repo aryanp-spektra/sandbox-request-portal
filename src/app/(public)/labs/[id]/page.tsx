@@ -39,7 +39,7 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
       <RecentRecorder id={lab.id} />
       <div className="deep relative overflow-hidden">
         <div className="wrap-wide relative z-10 py-9">
-          <Link href="/" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 transition-colors hover:text-white">
+          <Link href="/explore" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 transition-colors hover:text-white">
             <ArrowLeft className="h-4 w-4" /> Back to catalog
           </Link>
 

@@ -1,16 +1,19 @@
-import { Suspense } from "react";
-import { ExploreClient } from "./ExploreClient";
+import { Hero } from "./Hero";
+import { LABS, catalogStats } from "@/lib/labs";
+import { SOLUTION_AREAS } from "@/lib/state";
 
 export const metadata = {
-  title: "Explore the Microsoft Sandbox catalog",
+  title: "Microsoft Sandbox, the FY27 lab catalog",
   description:
-    "Browse every guided lab, hackathon and sandbox in the Microsoft Sandbox program. Filter by level, workload and solution play, see what changed in Build 2026, and export to Excel or PDF.",
+    "A single self-service catalog of Microsoft guided labs, hackathons and sandboxes across AI, cloud and security. Browse, compare and request access in minutes.",
 };
 
-export default function ExplorePage() {
-  return (
-    <Suspense fallback={<div className="wrap-wide py-24 text-center text-faint">Loading catalog…</div>}>
-      <ExploreClient />
-    </Suspense>
-  );
+export default function HomePage() {
+  const stats = catalogStats();
+  const areas = SOLUTION_AREAS.map((name) => ({
+    name,
+    count: LABS.filter((l) => l.solutionArea === name).length,
+  }));
+
+  return <Hero stats={stats} areas={areas} />;
 }

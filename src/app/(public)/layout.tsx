@@ -22,10 +22,13 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
           <div className="flex-1" />
 
-          <span className="hidden items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] font-semibold text-mut sm:inline-flex">
+          <Link
+            href="/explore"
+            className="hidden items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] font-semibold text-mut transition-colors hover:border-[#cdd2e2] hover:text-slate sm:inline-flex"
+          >
             <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-ready)" }} />
             {LABS.length} labs in the FY27 catalog
-          </span>
+          </Link>
           <ThemeToggle />
           <Link
             href="/portal"

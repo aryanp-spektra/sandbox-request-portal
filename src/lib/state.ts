@@ -77,13 +77,14 @@ export const SOLUTION_AREAS = [
 
 export const LEVELS = ["Beginner", "Intermediate", "Advanced"] as const;
 
+// Type accents stay within the CloudLabs violet family — distinct shades, one brand.
 export const TYPE_META: Record<LabType, { label: string; accent: string; accent2: string }> = {
-  "guided-lab": { label: "Guided Lab", accent: "#2563eb", accent2: "#06b6d4" },
-  "gps-skilling": { label: "GPS Skilling", accent: "#7c3aed", accent2: "#a855f7" },
-  "standard-sandbox": { label: "Standard Sandbox", accent: "#0891b2", accent2: "#22d3ee" },
-  hiad: { label: "Hack in a Day", accent: "#ea580c", accent2: "#f59e0b" },
-  "hack-to-skill": { label: "Hack to Skill", accent: "#db2777", accent2: "#f472b6" },
-  "hack-to-build": { label: "Hack to Build", accent: "#9333ea", accent2: "#c084fc" },
+  "guided-lab": { label: "Guided Lab", accent: "#5b54c4", accent2: "#7d76d8" },
+  "gps-skilling": { label: "GPS Skilling", accent: "#6b48c0", accent2: "#8e6fd6" },
+  "standard-sandbox": { label: "Standard Sandbox", accent: "#4f3fa8", accent2: "#7060c8" },
+  hiad: { label: "Hack in a Day", accent: "#7a4fc0", accent2: "#9c78d8" },
+  "hack-to-skill": { label: "Hack to Skill", accent: "#8458c4", accent2: "#a585d8" },
+  "hack-to-build": { label: "Hack to Build", accent: "#5d4cb8", accent2: "#7e6dd6" },
 };
 
 /** How a catalogue status maps to a lifecycle (the seed applies the same map). */
