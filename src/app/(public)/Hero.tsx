@@ -8,6 +8,7 @@ import { LIFECYCLE } from "@/lib/state";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
 import { Button } from "@/components/ui/Button";
+import { BrandMark } from "@/components/Brand";
 
 type AreaCard = { name: string; count: number };
 type Stats = {
@@ -64,40 +65,62 @@ export function Hero({ stats, areas }: { stats: Stats; areas: AreaCard[] }) {
     <main>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
-        {/* soft brand wash, kept subtle */}
+        {/* layered brand wash — richer violet, fading into the canvas */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-20"
+          style={{
+            background:
+              "radial-gradient(1000px 520px at 84% -10%, color-mix(in srgb, var(--color-primary) 30%, transparent), transparent 60%), radial-gradient(820px 520px at 4% 2%, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 58%), radial-gradient(700px 520px at 50% 128%, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 62%), linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 7%, var(--color-canvas)), var(--color-canvas) 78%)",
+          }}
+        />
+        {/* fine dot-grid texture, masked so it only whispers near the top */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
-            background:
-              "radial-gradient(900px 440px at 82% -8%, color-mix(in srgb, var(--color-primary) 14%, transparent), transparent 60%), radial-gradient(680px 420px at 6% 4%, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 58%)",
+            backgroundImage:
+              "radial-gradient(color-mix(in srgb, var(--color-primary) 26%, transparent) 1px, transparent 1px)",
+            backgroundSize: "22px 22px",
+            maskImage: "radial-gradient(120% 75% at 50% -8%, #000 20%, transparent 68%)",
+            WebkitMaskImage: "radial-gradient(120% 75% at 50% -8%, #000 20%, transparent 68%)",
+            opacity: 0.4,
           }}
         />
 
         <div className="wrap py-24 sm:py-28 lg:py-32">
           <div className="mx-auto max-w-3xl text-center">
             <Reveal i={0}>
-              <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[12.5px] font-semibold text-mut shadow-soft">
+              <div
+                className="flex justify-center"
+                style={{ filter: "drop-shadow(0 10px 26px color-mix(in srgb, var(--color-primary) 34%, transparent))" }}
+              >
+                <BrandMark size={58} />
+              </div>
+            </Reveal>
+
+            <Reveal i={1}>
+              <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--color-primary)_28%,var(--color-line))] bg-surface/70 px-3.5 py-1.5 text-[12.5px] font-semibold text-mut shadow-soft backdrop-blur">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 Microsoft Sandbox · FY27 Catalog
               </span>
             </Reveal>
 
-            <Reveal i={1}>
+            <Reveal i={2}>
               <h1 className="mt-7 font-display text-[40px] font-extrabold leading-[1.05] tracking-tight text-ink sm:text-[54px] lg:text-[62px]">
                 Every Microsoft lab,
                 <br className="hidden sm:block" /> ready when <span className="aurora-text">you are</span>
               </h1>
             </Reveal>
 
-            <Reveal i={2}>
+            <Reveal i={3}>
               <p className="mx-auto mt-6 max-w-xl text-[16px] leading-relaxed text-mut sm:text-[17px]">
                 A single, self-service catalog of guided labs, hackathons and sandboxes
                 across AI, cloud and security — browse, compare, and request access in minutes.
               </p>
             </Reveal>
 
-            <Reveal i={3}>
+            <Reveal i={4}>
               <div className="mt-9 flex justify-center">
                 <Button href="/explore" size="lg" className="w-full sm:w-auto">
                   Explore catalog
