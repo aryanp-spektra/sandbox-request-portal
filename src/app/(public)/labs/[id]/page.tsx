@@ -7,7 +7,9 @@ import {
 } from "lucide-react";
 import { getLab, LABS } from "@/lib/labs";
 import { TYPE_META, lifecycleConfig } from "@/lib/state";
+import { getStarCount } from "@/lib/data/stars";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
+import { StarButton } from "@/components/StarButton";
 import { FyMapping } from "@/components/FyMapping";
 import { RecentRecorder } from "@/components/RecentRecorder";
 
@@ -32,6 +34,7 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
 
   const meta = TYPE_META[lab.type];
   const cfg = lifecycleConfig(lab.lifecycle);
+  const stars = await getStarCount(lab.id);
   const related = LABS.filter((l) => l.id !== lab.id && l.solutionArea === lab.solutionArea).slice(0, 4);
 
   return (
@@ -39,29 +42,32 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
       <RecentRecorder id={lab.id} />
       <div className="deep relative overflow-hidden">
         <div className="wrap-wide relative z-10 py-9">
-          <Link href="/explore" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 transition-colors hover:text-white">
-            <ArrowLeft className="h-4 w-4" /> Back to catalog
-          </Link>
+          <div className="flex items-center justify-between gap-3">
+            <Link href="/explore" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 transition-colors hover:text-white">
+              <ArrowLeft className="h-4 w-4" /> Back to catalog
+            </Link>
+            <StarButton labId={lab.id} initialCount={stars} tone="dark" />
+          </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-2.5">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[12px] font-bold uppercase tracking-wide text-white backdrop-blur">
               <Layers className="h-3.5 w-3.5" /> {meta.label}
             </span>
             <LifecycleBadge state={lab.lifecycle} />
-            {lab.isNew && <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-cyan-200 backdrop-blur">New</span>}
+            {lab.isNew && <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-violet-200 backdrop-blur">New</span>}
           </div>
 
           <h1 className="mt-4 max-w-[860px] font-display text-[clamp(26px,4vw,42px)] font-extrabold leading-tight tracking-tight text-white">
             {lab.title}
           </h1>
 
-          <p className="mt-3 flex items-start gap-2 text-[16px] font-medium leading-relaxed text-cyan-100/90">
-            <Sparkles className="mt-1 h-4 w-4 flex-none" />
+          <p className="mt-3 flex items-start gap-2 text-[16px] font-medium leading-relaxed text-white/85">
+            <Sparkles className="mt-1 h-4 w-4 flex-none text-violet-200" />
             {lab.hook}
           </p>
 
           {lab.fy27Title && (
-            <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[12.5px] font-semibold text-cyan-100 backdrop-blur">
+            <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[12.5px] font-semibold text-violet-100 backdrop-blur">
               <Tag className="h-3.5 w-3.5" />
               FY27 name: {lab.fy27Title}
             </p>

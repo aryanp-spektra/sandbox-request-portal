@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getLab } from "@/lib/labs";
+import { getStarCount } from "@/lib/data/stars";
 import { LabDetail } from "./LabDetail";
 
 export async function generateMetadata({
@@ -17,5 +18,6 @@ export default async function LabPage({ params }: { params: Promise<{ id: string
   const { id } = await params;
   const lab = getLab(id);
   if (!lab) notFound();
-  return <LabDetail id={id} />;
+  const stars = await getStarCount(id);
+  return <LabDetail id={id} initialStars={stars} />;
 }

@@ -108,17 +108,46 @@ export async function exportExcel(labs: Lab[], label = "filtered view") {
    PDF — premium one-lab-per-page booklet
    ════════════════════════════════════════════════════════════════════════ */
 
-// CloudLabs brand palette (sRGB approximations of the violet tokens)
-const BRAND: [number, number, number] = [109, 78, 214];
-const BRAND_DARK: [number, number, number] = [70, 48, 138];
+// CloudLabs brand palette — exact sRGB of the violet design tokens.
+const BRAND: [number, number, number] = [98, 86, 206];
+const BRAND_DARK: [number, number, number] = [77, 60, 179];
+const BRAND_DEEP: [number, number, number] = [50, 40, 119];
+const PURPLE_LIGHT: [number, number, number] = [153, 150, 255];
 const INK: [number, number, number] = [26, 26, 32];
 const MUT: [number, number, number] = [110, 110, 128];
 const FAINT: [number, number, number] = [150, 150, 165];
 const LINE: [number, number, number] = [228, 226, 236];
-const TINT: [number, number, number] = [245, 242, 252];
+const TINT: [number, number, number] = [244, 243, 252];
+
+/** Load an image (PNG/WEBP) and return a PNG data URL + natural size.
+ *  Returns null if it can't load, so the PDF still renders without the logo. */
+async function loadImage(url: string): Promise<{ data: string; w: number; h: number } | null> {
+  try {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    await new Promise<void>((res, rej) => {
+      img.onload = () => res();
+      img.onerror = () => rej(new Error("img load failed"));
+      img.src = url;
+    });
+    const c = document.createElement("canvas");
+    c.width = img.naturalWidth;
+    c.height = img.naturalHeight;
+    const ctx = c.getContext("2d");
+    if (!ctx) return null;
+    ctx.drawImage(img, 0, 0);
+    return { data: c.toDataURL("image/png"), w: img.naturalWidth, h: img.naturalHeight };
+  } catch {
+    return null;
+  }
+}
+
+const LOGO_WHITE = "/CloudLabs-with-SS-white-Full-1024x346-1-768x260-1.png";
+const LOGO_MARK = "/cl-light-mode-small.png";
 
 export async function exportPDF(labs: Lab[], label = "Full catalog") {
   const { jsPDF } = await import("jspdf");
+  const [logoWhite, logoMark] = await Promise.all([loadImage(LOGO_WHITE), loadImage(LOGO_MARK)]);
 
   const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
   const W = doc.internal.pageSize.getWidth();
@@ -127,45 +156,55 @@ export async function exportPDF(labs: Lab[], label = "Full catalog") {
   const CW = W - M * 2;
 
   /* ── cover ──────────────────────────────────────────────────────────── */
-  doc.setFillColor(...BRAND_DARK);
+  doc.setFillColor(...BRAND_DEEP);
   doc.rect(0, 0, W, H, "F");
-  // soft lighter wash in the corner for depth
+  // layered brand glow for depth
   doc.setFillColor(...BRAND);
-  doc.circle(W + 40, -20, 240, "F");
+  doc.circle(W + 30, -10, 250, "F");
+  doc.setFillColor(...BRAND_DARK);
+  doc.circle(-40, H + 30, 200, "F");
+
+  // CloudLabs logo (white lockup) top-left
+  if (logoWhite) {
+    const lw = 188;
+    doc.addImage(logoWhite.data, "PNG", M, 130, lw, (lw * logoWhite.h) / logoWhite.w, "logoWhite", "FAST");
+  }
 
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
-  doc.setCharSpace(2);
-  doc.text("MICROSOFT SANDBOX", M, 250);
+  doc.setCharSpace(2.5);
+  doc.text("MICROSOFT SANDBOX", M, 300);
   doc.setCharSpace(0);
 
-  doc.setFontSize(42);
-  doc.text("FY27 Lab Catalog", M, 300);
+  doc.setFontSize(44);
+  doc.text("FY27 Lab Catalog", M, 350);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(13.5);
-  doc.setTextColor(225, 218, 248);
+  doc.setTextColor(220, 214, 248);
   doc.text(
     doc.splitTextToSize(
       "Guided labs, hackathons and sandboxes across AI, cloud and security — the complete FY27 program, one lab per page.",
-      CW - 80
+      CW - 70
     ),
     M,
-    336
+    386
   );
 
   // divider + meta
-  doc.setDrawColor(255, 255, 255);
-  doc.setLineWidth(0.6);
-  doc.line(M, 392, M + 120, 392);
+  doc.setDrawColor(...PURPLE_LIGHT);
+  doc.setLineWidth(1);
+  doc.line(M, 442, M + 130, 442);
+  doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(235, 230, 250);
-  doc.text(`${labs.length} labs   ·   ${label}   ·   Exported ${stamp()}`, M, 416);
+  doc.text(`${labs.length} labs   ·   ${label}   ·   Exported ${stamp()}`, M, 466);
 
-  doc.setFontSize(10.5);
-  doc.setTextColor(205, 196, 235);
-  doc.text("Powered by CloudLabs — Spektra Systems", M, H - 56);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(198, 190, 232);
+  doc.text("Powered by CloudLabs — Spektra Systems", M, H - 54);
 
   /* ── helpers for lab pages ──────────────────────────────────────────── */
   let y = 0;
@@ -330,18 +369,25 @@ export async function exportPDF(labs: Lab[], label = "Full catalog") {
     }
   });
 
-  /* ── footers (page numbers + brand rule) ────────────────────────────── */
+  /* ── footers (CloudLabs mark + page numbers + brand rule) ───────────── */
   const total = doc.getNumberOfPages();
+  const markH = 13;
+  const markW = logoMark ? (markH * logoMark.w) / logoMark.h : 0;
   for (let p = 2; p <= total; p++) {
     doc.setPage(p);
     doc.setDrawColor(...LINE);
     doc.setLineWidth(0.7);
     doc.line(M, H - 38, W - M, H - 38);
+    let fx = M;
+    if (logoMark) {
+      doc.addImage(logoMark.data, "PNG", fx, H - 31, markW, markH, "logoMark", "FAST");
+      fx += markW + 7;
+    }
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(...FAINT);
-    doc.text("Microsoft Sandbox · FY27 Lab Catalog", M, H - 24);
-    doc.text(`${p - 1} / ${total - 1}`, W - M, H - 24, { align: "right" });
+    doc.text("Microsoft Sandbox · FY27 Lab Catalog", fx, H - 21);
+    doc.text(`${p - 1} / ${total - 1}`, W - M, H - 21, { align: "right" });
   }
 
   doc.save(`Microsoft-Sandbox-Catalog-${stamp()}.pdf`);
