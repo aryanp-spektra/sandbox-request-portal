@@ -156,19 +156,14 @@ export function ExploreClient() {
               "radial-gradient(700px 260px at 0% -20%, color-mix(in srgb, var(--brand) 12%, transparent), transparent 60%)",
           }}
         />
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-10 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
-          <div>
-            <h1 className="font-bold text-3xl tracking-display sm:text-4xl">Explore the catalog</h1>
-            <p className="mt-2 max-w-2xl text-muted-foreground text-sm">
-              Every guided lab, hackathon and sandbox, mapped from FY26 to the FY27 solution plays.
-            </p>
-            <div className="mt-3 flex flex-wrap items-center gap-2.5 text-muted-foreground text-xs">
-              <Badge variant="secondary" className="font-medium">{LABS.length} labs</Badge>
-              <span>Updated {lastUpdatedLabel()}</span>
-            </div>
-          </div>
-          <div className="shrink-0">
-            <RequestCustomLab variant="outline" size="default" />
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <h1 className="font-bold text-3xl tracking-display sm:text-4xl">Explore the catalog</h1>
+          <p className="mt-2 max-w-2xl text-muted-foreground text-sm">
+            Every guided lab, hackathon and sandbox, mapped from FY26 to the FY27 solution plays.
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2.5 text-muted-foreground text-xs">
+            <Badge variant="secondary" className="font-medium">{LABS.length} labs</Badge>
+            <span>Updated {lastUpdatedLabel()}</span>
           </div>
         </div>
       </section>
@@ -273,16 +268,45 @@ export function ExploreClient() {
 
         {/* grid */}
         {filtered.length === 0 ? (
-          <div className="mt-16 text-center">
+          <div className="mt-12 flex flex-col items-center gap-4 rounded-2xl border bg-card py-14 text-center">
             <p className="font-semibold">No labs match these filters.</p>
-            <Button variant="outline" size="sm" className="mt-4" onClick={clearAll}>Clear filters</Button>
+            <p className="max-w-sm text-muted-foreground text-sm">
+              Adjust your filters, or tell us what you need and we&apos;ll scope a custom sandbox for you.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <Button variant="outline" size="sm" onClick={clearAll}>Clear filters</Button>
+              <RequestCustomLab variant="default" size="sm" />
+            </div>
           </div>
         ) : (
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((l) => (
-              <LabCard key={l.id} lab={l} />
-            ))}
-          </div>
+          <>
+            <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((l) => (
+                <LabCard key={l.id} lab={l} />
+              ))}
+            </div>
+
+            {/* end-of-grid CTA — the canonical placement for "request a custom lab" */}
+            <div className="relative mt-10 overflow-hidden rounded-2xl border bg-card px-6 py-8 shadow-md sm:px-10">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 -z-10"
+                style={{
+                  background:
+                    "radial-gradient(600px 220px at 100% 0%, color-mix(in srgb, var(--brand) 12%, transparent), transparent 70%)",
+                }}
+              />
+              <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
+                <div>
+                  <h2 className="font-bold text-xl tracking-display">Can&apos;t find the lab you need?</h2>
+                  <p className="mt-1 max-w-xl text-muted-foreground text-sm">
+                    Tell us the topic, platform and audience — our Sandbox team will scope a custom lab for your engagement.
+                  </p>
+                </div>
+                <RequestCustomLab variant="default" size="lg" className="shrink-0" />
+              </div>
+            </div>
+          </>
         )}
       </div>
     </main>
