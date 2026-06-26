@@ -33,7 +33,7 @@ export function MarketplaceFooter() {
           <div className="space-y-4 lg:col-span-2">
             <BrandLockup height={26} />
             <p className="max-w-[280px] text-muted-foreground text-sm leading-relaxed">
-              The Microsoft Sandbox catalog — {LABS.length} guided labs, hackathons and sandboxes,
+              The Microsoft Sandbox catalog, {LABS.length} guided labs, hackathons and sandboxes,
               powered by CloudLabs.
             </p>
             <p className="flex flex-wrap items-center gap-1.5 text-muted-foreground text-sm">

@@ -20,7 +20,7 @@ function readStarred(): string[] {
 }
 
 /**
- * "Saved labs" — the labs this browser has starred (interest stars are kept in
+ * "Saved labs", the labs this browser has starred (interest stars are kept in
  * localStorage, so this list is per-device and needs no sign-in). Reads the
  * starred IDs once on mount; `ready` guards against a flash of the empty state
  * during hydration.

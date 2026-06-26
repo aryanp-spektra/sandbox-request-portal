@@ -77,7 +77,7 @@ export const SOLUTION_AREAS = [
 
 export const LEVELS = ["Beginner", "Intermediate", "Advanced"] as const;
 
-// Type accents stay within the CloudLabs violet family — distinct shades, one brand.
+// Type accents stay within the CloudLabs violet family, distinct shades, one brand.
 export const TYPE_META: Record<LabType, { label: string; accent: string; accent2: string }> = {
   "guided-lab": { label: "Guided Lab", accent: "#5b54c4", accent2: "#7d76d8" },
   "gps-skilling": { label: "GPS Skilling", accent: "#6b48c0", accent2: "#8e6fd6" },

@@ -27,7 +27,7 @@ const AREA_META: Record<string, { icon: typeof SparklesIcon; blurb: string }> = 
   },
   "Cloud & AI Platforms": {
     icon: CloudIcon,
-    blurb: "Azure infrastructure, data and AI platform labs — from foundations to advanced architectures.",
+    blurb: "Azure infrastructure, data and AI platform labs, from foundations to advanced architectures.",
   },
   Security: {
     icon: ShieldCheckIcon,
@@ -68,7 +68,7 @@ export function StoreLanding({ stats, areas }: { stats: Stats; areas: AreaCard[]
             The Microsoft Sandbox <span className="text-primary">catalog</span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground leading-relaxed sm:text-lg">
-            Every guided lab, hackathon and sandbox across AI, cloud and security —
+            Every guided lab, hackathon and sandbox across AI, cloud and security,
             browse, compare and request access in minutes.
           </p>
 
@@ -204,7 +204,7 @@ export function StoreLanding({ stats, areas }: { stats: Stats; areas: AreaCard[]
           />
           <h2 className="font-bold text-2xl tracking-display sm:text-3xl">Ready to dive into the catalog?</h2>
           <p className="mx-auto mt-2 max-w-md text-muted-foreground text-sm">
-            {stats.total} labs, filterable by area, level, product and format — with Excel and PDF export.
+            {stats.total} labs, filterable by area, level, product and format, with Excel and PDF export.
           </p>
           <div className="mt-7 flex justify-center">
             <Button asChild size="lg">

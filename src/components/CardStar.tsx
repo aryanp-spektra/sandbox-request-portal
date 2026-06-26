@@ -28,7 +28,7 @@ function writeStarred(ids: string[]) {
  * Compact interest star for lab cards. A small circular toggle that lives as an
  * overlay in a card's top-right corner (rendered as a sibling of the card's
  * <Link>, never nested inside it). Tracks the per-browser starred flag in
- * localStorage and nudges the shared server-side count. `count` is optional —
+ * localStorage and nudges the shared server-side count. `count` is optional,
  * pass it on surfaces where the authoritative count is known (e.g. a trending
  * rail); the catalog grid renders the icon alone.
  */
@@ -82,7 +82,7 @@ export function CardStar({
       onClick={toggle}
       aria-pressed={starred}
       aria-label={starred ? "Remove your interest star" : "Star this lab to show interest"}
-      title={starred ? "You're interested — click to remove" : "Star this lab to show interest"}
+      title={starred ? "You're interested, click to remove" : "Star this lab to show interest"}
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border font-semibold text-xs transition-all active:scale-95",
         showCount ? "px-2.5 py-1" : "size-8 justify-center p-0",

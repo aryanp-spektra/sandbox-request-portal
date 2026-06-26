@@ -102,7 +102,7 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
           )}
 
           {lab.modules.length > 0 && (
-            <Section title={`What you'll do — ${lab.modules.length} modules`}>
+            <Section title={`What you'll do, ${lab.modules.length} modules`}>
               <ol className="space-y-0">
                 {lab.modules.map((m, i) => (
                   <li key={i} className="flex gap-4 pb-5 last:pb-0">

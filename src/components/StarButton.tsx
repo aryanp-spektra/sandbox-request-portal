@@ -80,7 +80,7 @@ export function StarButton({
       onClick={toggle}
       aria-pressed={starred}
       aria-label={starred ? "Remove your interest star" : "Star this lab to show interest"}
-      title={starred ? "You're interested — click to remove" : "Star this lab to show interest"}
+      title={starred ? "You're interested, click to remove" : "Star this lab to show interest"}
       className={cn(
         "group inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-[13px] font-semibold transition-all active:translate-y-px",
         pending && "opacity-70",
