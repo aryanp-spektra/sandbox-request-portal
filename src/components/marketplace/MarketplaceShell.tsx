@@ -23,7 +23,7 @@ function isActive(pathname: string, href: string) {
 
 /**
  * Public marketplace app shell. The left sidebar is a slim icon rail that
- * expands to the full labelled menu on hover — the expanded panel overlays the
+ * expands to the full labelled menu on hover, the expanded panel overlays the
  * content rather than shoving the page. On mobile it collapses into a drawer.
  */
 export function MarketplaceShell({

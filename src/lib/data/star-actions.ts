@@ -2,7 +2,7 @@
 
 import { toggleStar, getStars } from "./stars";
 
-/** Toggle a lab's interest star. Anonymous — no session required. */
+/** Toggle a lab's interest star. Anonymous, no session required. */
 export async function toggleStarAction(labId: string, on: boolean): Promise<number> {
   if (!labId) throw new Error("Missing lab id.");
   return toggleStar(labId, on);

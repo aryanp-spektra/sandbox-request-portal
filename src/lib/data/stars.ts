@@ -5,7 +5,7 @@ import { mutate, readJson } from "./store";
  * Lab "interest" stars. A lightweight, anonymous signal: anyone browsing the
  * catalog can star a lab they'd like to see / run. Counts are aggregated per
  * lab so the team can see which technologies and lab types draw the most
- * interest — a complement to actual voucher requests.
+ * interest, a complement to actual voucher requests.
  *
  * Stored in its own collection (not the auth-gated portal doc) so the public
  * catalog can write to it. Per-browser de-duplication lives in localStorage on

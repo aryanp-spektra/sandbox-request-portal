@@ -3405,7 +3405,7 @@
     "level": "Intermediate",
     "style": "Instructor Led",
     "durationHours": 8,
-    "overview": "This training is designed specifically for solution architects and presales professionals looking to deepen their expertise in Microsoft Copilot Studio. Learn how to effectively position, demonstrate, and guide customers in adopting Copilot-powered agents—across business processes, Microsoft 365 apps, and custom solutions. You will also understand governance, licensing, and cost models to confidently handle objections. Whether you’re looking to enhance your deal readiness or lead Copilot solution conversations, this workshop equips you with the strategic and technical knowledge to drive customer success with Copilot Studio",
+    "overview": "This training is designed specifically for solution architects and presales professionals looking to deepen their expertise in Microsoft Copilot Studio. Learn how to effectively position, demonstrate, and guide customers in adopting Copilot-powered agents, across business processes, Microsoft 365 apps, and custom solutions. You will also understand governance, licensing, and cost models to confidently handle objections. Whether you’re looking to enhance your deal readiness or lead Copilot solution conversations, this workshop equips you with the strategic and technical knowledge to drive customer success with Copilot Studio",
     "modules": [
       "Understand Microsoft 365 Copilot Agents – Learn the role of Copilot and Agents, explore agent capabilities across Microsoft 365, and discover low-code agent creation using Copilot Studio and SharePoint Agents.",
       "Build and Customize Intelligent Agents – Create custom and autonomous agents with Copilot Studio, enhance them using Azure AI Foundry, and customize orchestration, knowledge sources, actions, and user experiences.",
@@ -3450,7 +3450,7 @@
     "level": "Intermediate",
     "style": "Instructor Led",
     "durationHours": 8,
-    "overview": "This course empowers you to secure your entire environment using Microsoft Defender XDR, AI agents, and Agent 365. You'll learn how to protect cloud ecosystems, email, SaaS applications, identities while applying Zero Trust security principles. Explore how to detect and respond to advanced threats rapidly, manage exposure risks, and leverage AI-powered security operations. The course also highlights seamless integration with Microsoft Sentinel, Security Copilot, and Agent 365 to discover, govern, and secure local AI agents — enabling unified visibility and streamlined threat management across your organization.",
+    "overview": "This course empowers you to secure your entire environment using Microsoft Defender XDR, AI agents, and Agent 365. You'll learn how to protect cloud ecosystems, email, SaaS applications, identities while applying Zero Trust security principles. Explore how to detect and respond to advanced threats rapidly, manage exposure risks, and leverage AI-powered security operations. The course also highlights seamless integration with Microsoft Sentinel, Security Copilot, and Agent 365 to discover, govern, and secure local AI agents, enabling unified visibility and streamlined threat management across your organization.",
     "modules": [
       "Protect Email and Collaboration Environments – Configure Microsoft Defender for Office 365 threat protection policies, simulate phishing and malware attacks, and strengthen defenses with Anti-Phishing and Safe Links policies.",
       "Detect and Investigate Security Threats – Analyze threats using Threat Explorer, real-time detections, and Microsoft Defender XDR to investigate, respond to, and remediate security incidents.",
@@ -6780,7 +6780,7 @@
     "level": "Intermediate",
     "style": "Instructor Led",
     "durationHours": 8,
-    "overview": "Hands-on challenge where you will design, build, and deploy intelligent agents using Microsoft Copilot Studio. Through real-world business scenarios and hands on labs, you will explore how to create AI-powered assistants that automate processes, respond intelligently to user input, and integrate securely with enterprise systems — all without writing complex code.",
+    "overview": "Hands-on challenge where you will design, build, and deploy intelligent agents using Microsoft Copilot Studio. Through real-world business scenarios and hands on labs, you will explore how to create AI-powered assistants that automate processes, respond intelligently to user input, and integrate securely with enterprise systems, all without writing complex code.",
     "modules": [
       "Automate Vendor Onboarding and Compliance – Build AI-powered workflows to streamline vendor onboarding, extract and validate document data, integrate with legacy systems, and enforce governance-driven approval processes.",
       "Develop Intelligent Capital Expenditure (CapEx) Agents – Create AI agents for CapEx request submission and approvals, leverage Microsoft 365 business data for decision-making, and implement automated evaluations and quality controls.",
@@ -7191,7 +7191,7 @@
     "level": "Intermediate",
     "style": "Instructor Led",
     "durationHours": 16,
-    "overview": "This course provides a deep learning experience across Microsoft Intune Suite, covering unified endpoint management, cloud-based security, AI-driven troubleshooting, and advanced mobility capabilities. Across four immersive days, participants will plan, deploy, secure, and optimize Intune environments end-to-end—integrating Defender for Endpoint, Purview DLP, Remote Help, EAM, Tunnel, and Cloud PKI. By the end, learners will be able to confidently design and implement enterprise-grade endpoint solutions aligned to Zero Trust and modern device strategies.",
+    "overview": "This course provides a deep learning experience across Microsoft Intune Suite, covering unified endpoint management, cloud-based security, AI-driven troubleshooting, and advanced mobility capabilities. Across four immersive days, participants will plan, deploy, secure, and optimize Intune environments end-to-end, integrating Defender for Endpoint, Purview DLP, Remote Help, EAM, Tunnel, and Cloud PKI. By the end, learners will be able to confidently design and implement enterprise-grade endpoint solutions aligned to Zero Trust and modern device strategies.",
     "modules": [
       "Manage Identities and Device Enrollment – Configure Microsoft Entra ID, synchronize identities, manage device registration, and enroll devices into Microsoft Intune.",
       "Deploy and Manage Device Configurations – Create configuration profiles, configure kiosk and Wi-Fi settings, validate Group Policies, and monitor device and user activity.",

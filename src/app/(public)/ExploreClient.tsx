@@ -40,7 +40,7 @@ const STATUS_OPTIONS: { key: Lifecycle | "all"; label: string }[] = [
 ];
 
 const ALL = "all";
-const PAGE_SIZE = 12; // 4 rows of 3 on desktop — balances page length vs. count
+const PAGE_SIZE = 12; // 4 rows of 3 on desktop, balances page length vs. count
 
 export function ExploreClient() {
   const [ready, setReady] = useState(false);
@@ -310,7 +310,7 @@ export function ExploreClient() {
 
             {pageCount > 1 && <Pager page={current} pageCount={pageCount} onChange={goToPage} />}
 
-            {/* end-of-grid CTA — the canonical placement for "request a custom lab" */}
+            {/* end-of-grid CTA, the canonical placement for "request a custom lab" */}
             <div className="relative mt-10 overflow-hidden rounded-2xl border bg-card px-6 py-8 shadow-md sm:px-10">
               <div
                 aria-hidden
@@ -324,7 +324,7 @@ export function ExploreClient() {
                 <div>
                   <h2 className="font-bold text-xl tracking-display">Can&apos;t find the lab you need?</h2>
                   <p className="mt-1 max-w-xl text-muted-foreground text-sm">
-                    Tell us the topic, platform and audience — our Sandbox team will scope a custom lab for your engagement.
+                    Tell us the topic, platform and audience, our Sandbox team will scope a custom lab for your engagement.
                   </p>
                 </div>
                 <RequestCustomLab variant="default" size="lg" className="shrink-0" />

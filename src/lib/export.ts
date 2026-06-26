@@ -26,64 +26,106 @@ function handsOnLabel(type: string): string {
 }
 
 /* ════════════════════════════════════════════════════════════════════════
-   EXCEL — GPS Catalog column layout
+   EXCEL, GPS Catalog column layout
    ════════════════════════════════════════════════════════════════════════ */
 
-interface Row {
-  "FY26 Solution Area": string;
-  "FY26 Solution Play": string;
-  "FY27 Solution Area": string;
-  "FY27 Solution Play": string;
-  "Level (in GPS Catalog format)": string;
-  "Lab Title": string;
-  "Lab Catalog": string;
-  Style: string;
-  Status: string;
-  "Duration in Hours": string | number;
-  "Course Overview (in GPS Catalog format)": string;
-  "Lab Modules / Exercises": string;
-  "Featured Product (in GPS Catalog format)": string;
-}
+// ExcelJS colours are 8-digit ARGB hex.
+const XL = {
+  brand: "FF6256CE",
+  brandDeep: "FF4D3CB3",
+  white: "FFFFFFFF",
+  ink: "FF1A1A20",
+  zebra: "FFF5F3FC", // faint violet tint for alternating rows
+  line: "FFE2E2E8",
+  headLine: "FF4D3CB3",
+};
 
-function toRows(labs: Lab[]): Row[] {
-  return labs.map((l) => ({
-    "FY26 Solution Area": l.fy26Area ?? "",
-    "FY26 Solution Play": l.fy26Play ?? "",
-    "FY27 Solution Area": l.fy27Area,
-    "FY27 Solution Play": l.fy27Play ?? "",
-    "Level (in GPS Catalog format)": l.level ?? "",
-    "Lab Title": l.title,
-    "Lab Catalog": l.typeLabel,
-    Style: l.style ?? "",
-    Status: l.catalogStatus,
-    "Duration in Hours": l.durationHours ?? "",
-    "Course Overview (in GPS Catalog format)": l.overview,
-    "Lab Modules / Exercises": numberedModules(l.modules),
-    "Featured Product (in GPS Catalog format)": l.products.join(", "),
-  }));
-}
+const COLUMNS: { header: string; width: number; wrap?: boolean }[] = [
+  { header: "FY26 Solution Area", width: 22, wrap: true },
+  { header: "FY26 Solution Play", width: 26, wrap: true },
+  { header: "FY27 Solution Area", width: 22, wrap: true },
+  { header: "FY27 Solution Play", width: 30, wrap: true },
+  { header: "Level (in GPS Catalog format)", width: 16, wrap: true },
+  { header: "Lab Title", width: 40, wrap: true },
+  { header: "Lab Catalog", width: 16, wrap: true },
+  { header: "Style", width: 16, wrap: true },
+  { header: "Status", width: 18, wrap: true },
+  { header: "Duration in Hours", width: 12 },
+  { header: "Course Overview (in GPS Catalog format)", width: 60, wrap: true },
+  { header: "Lab Modules / Exercises", width: 46, wrap: true },
+  { header: "Featured Product (in GPS Catalog format)", width: 40, wrap: true },
+];
 
-export async function exportExcel(labs: Lab[], label = "filtered view") {
-  const XLSX = await import("xlsx");
-  const rows = toRows(labs);
-
-  const ws = XLSX.utils.json_to_sheet(rows);
-  ws["!cols"] = [
-    { wch: 22 }, { wch: 26 }, { wch: 22 }, { wch: 30 }, { wch: 16 }, { wch: 42 },
-    { wch: 16 }, { wch: 16 }, { wch: 20 }, { wch: 14 }, { wch: 72 }, { wch: 56 }, { wch: 46 },
+function rowValues(l: Lab): (string | number)[] {
+  return [
+    l.fy26Area ?? "",
+    l.fy26Play ?? "",
+    l.fy27Area,
+    l.fy27Play ?? "",
+    l.level ?? "",
+    l.title,
+    l.typeLabel,
+    l.style ?? "",
+    l.catalogStatus,
+    l.durationHours ?? "",
+    l.overview,
+    numberedModules(l.modules),
+    l.products.join(", "),
   ];
-  // Wrap text and lift row height so the multi-line module/overview cells breathe.
-  // (Best-effort: honored by Excel; ignored by viewers that don't read styles.)
-  const range = XLSX.utils.decode_range(ws["!ref"]!);
-  for (let r = range.s.r; r <= range.e.r; r++) {
-    for (let c = range.s.c; c <= range.e.c; c++) {
-      const cell = ws[XLSX.utils.encode_cell({ r, c })];
-      if (cell) cell.s = { alignment: { wrapText: true, vertical: "top" } };
-    }
-  }
-  ws["!rows"] = [{ hpt: 18 }, ...rows.map(() => ({ hpt: 120 }))];
+}
 
-  // summary sheet
+/** Styled workbook: branded header band, borders, frozen header, autofilter,
+ *  wrapped multi-line cells and zebra striping — reads like a real report. */
+export async function exportExcel(labs: Lab[], label = "filtered view") {
+  const ExcelJS = (await import("exceljs")).default;
+  const wb = new ExcelJS.Workbook();
+  wb.creator = "Microsoft Sandbox · CloudLabs";
+  wb.created = new Date();
+
+  /* ── Catalog sheet ───────────────────────────────────────────────────── */
+  const ws = wb.addWorksheet("FY27 Catalog", {
+    views: [{ state: "frozen", ySplit: 1 }],
+  });
+  ws.columns = COLUMNS.map((c) => ({ header: c.header, width: c.width }));
+
+  // Header row styling.
+  const head = ws.getRow(1);
+  head.height = 28;
+  head.eachCell((cell) => {
+    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: XL.brand } };
+    cell.font = { bold: true, color: { argb: XL.white }, size: 11 };
+    cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
+    cell.border = {
+      bottom: { style: "medium", color: { argb: XL.brandDeep } },
+      right: { style: "thin", color: { argb: "FF7E72D8" } },
+    };
+  });
+
+  // Data rows.
+  labs.forEach((l, i) => {
+    const row = ws.addRow(rowValues(l));
+    row.height = 96;
+    const zebra = i % 2 === 1;
+    row.eachCell((cell, col) => {
+      cell.alignment = { vertical: "top", horizontal: "left", wrapText: COLUMNS[col - 1]?.wrap !== false };
+      cell.font = { size: 10, color: { argb: XL.ink } };
+      if (zebra) cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: XL.zebra } };
+      cell.border = {
+        top: { style: "thin", color: { argb: XL.line } },
+        bottom: { style: "thin", color: { argb: XL.line } },
+        left: { style: "thin", color: { argb: XL.line } },
+        right: { style: "thin", color: { argb: XL.line } },
+      };
+    });
+    // Lab Title (col 6) bold for scanability.
+    row.getCell(6).font = { size: 10.5, bold: true, color: { argb: XL.ink } };
+    // Duration centered.
+    row.getCell(10).alignment = { vertical: "top", horizontal: "center" };
+  });
+
+  ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: COLUMNS.length } };
+
+  /* ── Summary sheet ───────────────────────────────────────────────────── */
   const byType = new Map<string, number>();
   const byArea = new Map<string, number>();
   const byStatus = new Map<string, number>();
@@ -92,37 +134,57 @@ export async function exportExcel(labs: Lab[], label = "filtered view") {
     byArea.set(String(l.solutionArea), (byArea.get(String(l.solutionArea)) ?? 0) + 1);
     byStatus.set(l.catalogStatus, (byStatus.get(l.catalogStatus) ?? 0) + 1);
   }
-  const summary = [
-    ["Microsoft Sandbox, Lab Catalog FY27"],
-    [`Exported ${stamp()} (${label})`],
-    [`Total labs: ${labs.length}`],
-    [],
-    ["By offering type"],
-    ...[...byType.entries()].map(([k, v]) => [k, v]),
-    [],
-    ["By solution area"],
-    ...[...byArea.entries()].map(([k, v]) => [k, v]),
-    [],
-    ["By status"],
-    ...[...byStatus.entries()].map(([k, v]) => [k, v]),
-  ];
-  const wsSum = XLSX.utils.aoa_to_sheet(summary);
-  wsSum["!cols"] = [{ wch: 40 }, { wch: 10 }];
 
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "FY27 Catalog");
-  XLSX.utils.book_append_sheet(wb, wsSum, "Summary");
-  XLSX.writeFile(wb, `Microsoft-Sandbox-Catalog-${stamp()}.xlsx`);
+  const sum = wb.addWorksheet("Summary");
+  sum.columns = [{ width: 42 }, { width: 12 }];
+
+  const title = sum.addRow(["Microsoft Sandbox, Lab Catalog FY27"]);
+  title.font = { bold: true, size: 14, color: { argb: XL.brandDeep } };
+  sum.addRow([`Exported ${stamp()} (${label})`]).font = { color: { argb: "FF6B6B7D" }, size: 10 };
+  sum.addRow([`Total labs: ${labs.length}`]).font = { bold: true, size: 11 };
+  sum.addRow([]);
+
+  const section = (heading: string, entries: [string, number][]) => {
+    const h = sum.addRow([heading]);
+    h.font = { bold: true, color: { argb: XL.white }, size: 11 };
+    h.getCell(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: XL.brand } };
+    h.getCell(2).fill = { type: "pattern", pattern: "solid", fgColor: { argb: XL.brand } };
+    h.height = 20;
+    for (const [k, v] of entries) {
+      const r = sum.addRow([k, v]);
+      r.getCell(1).border = { bottom: { style: "thin", color: { argb: XL.line } } };
+      r.getCell(2).border = { bottom: { style: "thin", color: { argb: XL.line } } };
+      r.getCell(2).alignment = { horizontal: "center" };
+    }
+    sum.addRow([]);
+  };
+  section("By offering type", [...byType.entries()]);
+  section("By solution area", [...byArea.entries()]);
+  section("By status", [...byStatus.entries()]);
+
+  /* ── Download ────────────────────────────────────────────────────────── */
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `Microsoft-Sandbox-Catalog-${stamp()}.xlsx`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 /* ════════════════════════════════════════════════════════════════════════
-   PDF — landscape "course one-pager", styled after the GPS skilling-catalog
+   PDF, landscape "course one-pager", styled after the GPS skilling-catalog
    slide: a brand header bar (breadcrumb + status), a left title/meta panel,
    and a right side with section-header bars + a multi-column module agenda.
    One lab per landscape page. Our terminology, our FY27 data.
    ════════════════════════════════════════════════════════════════════════ */
 
-// CloudLabs brand palette — exact sRGB of the violet design tokens.
+// CloudLabs brand palette, exact sRGB of the violet design tokens.
 const BRAND: [number, number, number] = [98, 86, 206];
 const BRAND_DARK: [number, number, number] = [77, 60, 179];
 const BRAND_DEEP: [number, number, number] = [50, 40, 119];
@@ -214,7 +276,7 @@ function drawCover(
   doc.setTextColor(220, 214, 248);
   doc.text(
     doc.splitTextToSize(
-      "Guided labs, hackathons and sandboxes across AI, cloud and security — the complete FY27 program, one course per page.",
+      "Guided labs, hackathons and sandboxes across AI, cloud and security, the complete FY27 program, one course per page.",
       W * 0.62
     ),
     M,
@@ -232,7 +294,7 @@ function drawCover(
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(198, 190, 232);
-  doc.text("Powered by CloudLabs — Spektra Systems", M, H - 44);
+  doc.text("Powered by CloudLabs, Spektra Systems", M, H - 44);
 }
 
 /* ── one landscape page per lab ─────────────────────────────────────────── */
@@ -317,10 +379,10 @@ function drawLabPage(doc: Doc, l: Lab, i: number, total: number, W: number, H: n
   ly += 16;
 
   const fields: [string, string][] = [
-    ["Duration", l.durationHours ? `${l.durationHours} hours` : "—"],
+    ["Duration", l.durationHours ? `${l.durationHours} hours` : "N/A"],
     ["Level", l.level || "All levels"],
     ["Hands-on Labs", handsOnLabel(l.type)],
-    ["Delivery Format", l.style || "—"],
+    ["Delivery Format", l.style || "N/A"],
     ["Modules", String(l.modules.length)],
     ["Last refreshed", refreshLabel(l.lastRefresh)],
   ];

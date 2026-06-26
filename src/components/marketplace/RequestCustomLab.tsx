@@ -94,7 +94,7 @@ export function RequestCustomLab({
             <div className="space-y-1.5">
               <DialogTitle className="text-xl">Request sent</DialogTitle>
               <DialogDescription className="text-balance">
-                We&apos;ve routed your request to the Sandbox team — we&apos;ll reply within one business day.
+                We&apos;ve routed your request to the Sandbox team, we&apos;ll reply within one business day.
               </DialogDescription>
             </div>
             <Button className="mt-2 w-full sm:w-auto" onClick={() => setOpen(false)}>Done</Button>

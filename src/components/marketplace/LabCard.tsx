@@ -15,7 +15,7 @@ export function LabCard({ lab, starCount }: { lab: Lab; starCount?: number }) {
 
   return (
     <article className="group relative h-full">
-      {/* interest star — overlay sibling of the card link, never nested inside it */}
+      {/* interest star, overlay sibling of the card link, never nested inside it */}
       <div className="absolute right-3 top-3 z-10">
         <CardStar labId={lab.id} count={starCount} />
       </div>
@@ -26,7 +26,7 @@ export function LabCard({ lab, starCount }: { lab: Lab; starCount?: number }) {
           "hover:border-primary/40 hover:shadow-lg motion-safe:hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
         )}
       >
-        {/* accent strip — offering-type tint, violet family */}
+        {/* accent strip, offering-type tint, violet family */}
         <div
           aria-hidden
           className="h-1"
