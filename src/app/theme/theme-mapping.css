@@ -1,0 +1,111 @@
+/* ============================================================================
+ * TAILWIND THEME MAPPING
+ *
+ * Maps the platform/marketing/sidebar/active-accent CSS variables (set in
+ * tokens.css and marketing.css) onto Tailwind v4's --color-* / --radius-*
+ * namespace so utilities like `bg-background`, `text-muted-foreground`,
+ * `rounded-xl`, `bg-accent-active-bg` are available.
+ *
+ * Also defines animations + keyframes that aren't tied to a token file.
+ *
+ * --radius-xl is fixed at 0.625rem (10px) to match the reference card
+ * radius instead of the computed `radius + 4px` (12px) from Shadcn defaults.
+ * ============================================================================ */
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-destructive-foreground: var(--destructive-foreground);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-input-ring: var(--input-ring);
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+	--color-chart-6: var(--chart-6);
+
+	--color-accent-active-bg: var(--accent-active-bg);
+	--color-accent-active-border: var(--accent-active-border);
+	--color-accent-active-fg: var(--accent-active-fg);
+
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+
+	--color-marketing-bg: var(--marketing-bg);
+	--color-marketing-bg-elevated: var(--marketing-bg-elevated);
+	--color-marketing-bg-subtle: var(--marketing-bg-subtle);
+	--color-marketing-fg: var(--marketing-fg);
+	--color-marketing-fg-muted: var(--marketing-fg-muted);
+	--color-marketing-fg-subtle: var(--marketing-fg-subtle);
+	--color-marketing-border: var(--marketing-border);
+	--color-marketing-border-strong: var(--marketing-border-strong);
+	--color-marketing-accent: var(--marketing-accent);
+	--color-marketing-accent-hover: var(--marketing-accent-hover);
+	--color-marketing-accent-fg: var(--marketing-accent-fg);
+	--color-marketing-card: var(--marketing-card);
+	--color-marketing-card-hover: var(--marketing-card-hover);
+
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: 0.625rem;
+
+	--animation-accordion-down: accordion-down 0.2s ease-out;
+	--animation-accordion-up: accordion-up 0.2s ease-out;
+	--animate-marquee: marquee var(--duration) infinite linear;
+	--animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+	--animate-fadeIn: fadeIn 0.3s ease-in-out;
+	--animate-slideIn: slideIn 0.3s ease-in-out;
+
+	@keyframes accordion-down {
+		from { height: 0; }
+		to { height: var(--radix-accordion-content-height); }
+	}
+
+	@keyframes accordion-up {
+		from { height: var(--radix-accordion-content-height); }
+		to { height: 0; }
+	}
+
+	@keyframes marquee {
+		from { transform: translateX(0); }
+		to { transform: translateX(calc(-100% - var(--gap))); }
+	}
+
+	@keyframes marquee-vertical {
+		from { transform: translateY(0); }
+		to { transform: translateY(calc(-100% - var(--gap))); }
+	}
+
+	@keyframes fadeIn {
+		from { opacity: 0; }
+		to { opacity: 1; }
+	}
+
+	@keyframes slideIn {
+		0% { transform: translateX(-100%); }
+		100% { transform: translateX(0); }
+	}
+}

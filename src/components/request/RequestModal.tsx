@@ -6,7 +6,7 @@ import { X, Mail, Inbox, Ticket, CalendarClock, Send } from "lucide-react";
 import type { Lab, SandboxRequest } from "@/lib/types";
 import { usePortal } from "@/lib/store";
 import { voucherRequestMailto, SUPPORT_EMAIL } from "@/lib/request";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/legacy-button";
 import { cn } from "@/lib/cn";
 
 const REQUESTER = { name: "Prashanti Tembhare", org: "WaferWire LLC" };

@@ -13,7 +13,7 @@ import type { Lab, Lifecycle } from "@/lib/types";
 import { TYPE_META } from "@/lib/state";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
 import { Countdown } from "@/components/ui/Countdown";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/legacy-button";
 
 const LANES: Lifecycle[] = ["Ready", "InUse", "Stale", "InTesting", "Retired"];
 

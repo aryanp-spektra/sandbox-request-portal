@@ -1,0 +1,271 @@
+/* ============================================================================
+ * MARKETING TOKENS + ANIMATIONS
+ *
+ * Isolated palette for the public marketing surface (app/(marketing)/*).
+ * The admin shell uses the platform tokens in tokens.css; marketing keeps
+ * its own bg/fg/border so the landing page can have a distinct vibe without
+ * touching the admin theme.
+ *
+ * --marketing-accent stays bound to --brand so CTAs match.
+ *
+ * Animations (float-slow / float-reverse / pulse-glow / shimmer) are used
+ * by the landing hero gradient orbs and certain CTA accents.
+ * ============================================================================ */
+
+:root {
+	--marketing-bg: var(--color-neutral-50);
+	--marketing-bg-elevated: var(--color-white);
+	--marketing-bg-subtle: var(--color-neutral-100);
+
+	--marketing-fg: var(--color-neutral-900);
+	--marketing-fg-muted: var(--color-neutral-600);
+	--marketing-fg-subtle: var(--color-neutral-500);
+
+	--marketing-border: var(--color-neutral-200);
+	--marketing-border-strong: var(--color-neutral-300);
+
+	--marketing-accent: var(--brand);
+	--marketing-accent-hover: var(--brand-hover);
+	--marketing-accent-fg: var(--brand-fg);
+
+	--marketing-card: color-mix(in srgb, var(--color-neutral-950), transparent 96%);
+	--marketing-card-hover: color-mix(in srgb, var(--color-neutral-950), transparent 92%);
+}
+
+.dark {
+	--marketing-bg: var(--color-neutral-950);
+	--marketing-bg-elevated: var(--color-neutral-900);
+	--marketing-bg-subtle: var(--color-neutral-900);
+
+	--marketing-fg: var(--color-white);
+	--marketing-fg-muted: var(--color-neutral-400);
+	--marketing-fg-subtle: var(--color-neutral-500);
+
+	--marketing-border: var(--color-neutral-800);
+	--marketing-border-strong: var(--color-neutral-700);
+
+	--marketing-accent: var(--brand);
+	--marketing-accent-hover: var(--brand-hover);
+	--marketing-accent-fg: var(--brand-fg);
+
+	--marketing-card: var(--color-neutral-900);
+	--marketing-card-hover: var(--color-neutral-800);
+}
+
+/* Marketing page animations — used by the landing hero gradient orbs and
+ * certain accent strips. Kept in marketing.css since they're surface-specific. */
+@keyframes float-slow {
+	0%, 100% {
+		transform: translate(0, 0) scale(1);
+	}
+	25% {
+		transform: translate(-30px, 20px) scale(1.02);
+	}
+	50% {
+		transform: translate(20px, -15px) scale(0.98);
+	}
+	75% {
+		transform: translate(-15px, -25px) scale(1.01);
+	}
+}
+
+@keyframes float-reverse {
+	0%, 100% {
+		transform: translate(0, 0) scale(1);
+	}
+	25% {
+		transform: translate(25px, -20px) scale(0.98);
+	}
+	50% {
+		transform: translate(-20px, 25px) scale(1.02);
+	}
+	75% {
+		transform: translate(15px, 15px) scale(0.99);
+	}
+}
+
+@keyframes pulse-glow {
+	0%, 100% {
+		opacity: 0.04;
+		transform: translate(-50%, -50%) scale(1);
+	}
+	50% {
+		opacity: 0.08;
+		transform: translate(-50%, -50%) scale(1.15);
+	}
+}
+
+@keyframes shimmer {
+	0% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: 200% 0;
+	}
+}
+
+.animate-float-slow {
+	animation: float-slow 25s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+	animation: float-reverse 30s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+	animation: pulse-glow 8s ease-in-out infinite;
+}
+
+.animate-shimmer {
+	animation: shimmer 3s ease-in-out infinite;
+	background-size: 200% 100%;
+}
+
+/* "Request a custom lab" CTA motion — a slow surface sheen sweep, a gently
+ * floating sparkle, and (primary placement only) a soft expanding accent ring.
+ * Deliberately subtle / enterprise-safe; all pinned for reduced-motion users in
+ * the media query below. */
+@keyframes lab-shimmer {
+	0% {
+		transform: translateX(-150%) skewX(-12deg);
+	}
+	60%,
+	100% {
+		transform: translateX(350%) skewX(-12deg);
+	}
+}
+
+@keyframes lab-float {
+	0%,
+	100% {
+		transform: translateY(0) rotate(0deg);
+	}
+	50% {
+		transform: translateY(-2px) rotate(8deg);
+	}
+}
+
+@keyframes lab-pulse-ring {
+	0% {
+		box-shadow: 0 0 0 0 color-mix(in oklab, var(--brand) 45%, transparent);
+	}
+	70%,
+	100% {
+		box-shadow: 0 0 0 10px color-mix(in oklab, var(--brand) 0%, transparent);
+	}
+}
+
+.animate-lab-shimmer {
+	/* Resting state (also what reduced-motion falls back to) keeps the sheen
+	 * off-canvas to the left, so it's invisible until it sweeps. */
+	transform: translateX(-150%) skewX(-12deg);
+	animation: lab-shimmer 4.5s ease-in-out infinite;
+}
+
+.animate-lab-float {
+	animation: lab-float 3.2s ease-in-out infinite;
+}
+
+.animate-lab-pulse-ring {
+	animation: lab-pulse-ring 2.8s ease-out infinite;
+}
+
+/* ============================================================================
+ * PREMIUM HERO TILE — textured panel used as the no-image product-card hero
+ * (gated behind `marketplace.cardStyle = "tile"`). Keyed to a per-product hue
+ * via the `--th` custom property (default 270 = brand purple). Light + dark
+ * variants; dark keys off the `.dark` class like the rest of the app theme.
+ * Net-new CSS — nothing references `.tile` until the tile card style is on.
+ * ============================================================================ */
+.tile {
+	position: relative;
+	overflow: hidden;
+	background:
+		radial-gradient(
+			120% 140% at 12% 0%,
+			hsl(var(--th, 270) 70% 96%) 0%,
+			transparent 55%
+		),
+		linear-gradient(
+			135deg,
+			hsl(var(--th, 270) 60% 95%) 0%,
+			hsl(calc(var(--th, 270) + 30) 55% 91%) 100%
+		);
+}
+
+.dark .tile {
+	background:
+		radial-gradient(
+			120% 140% at 12% 0%,
+			hsl(var(--th, 270) 60% 22%) 0%,
+			transparent 55%
+		),
+		linear-gradient(
+			135deg,
+			hsl(var(--th, 270) 45% 16%) 0%,
+			hsl(calc(var(--th, 270) + 30) 40% 12%) 100%
+		);
+}
+
+/* Masked dot-grid overlay, fading toward the bottom-right corner. */
+.tile::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background-image:
+		linear-gradient(
+			to right,
+			color-mix(in srgb, hsl(var(--th, 270) 50% 40%) 22%, transparent) 1px,
+			transparent 1px
+		),
+		linear-gradient(
+			to bottom,
+			color-mix(in srgb, hsl(var(--th, 270) 50% 40%) 22%, transparent) 1px,
+			transparent 1px
+		);
+	background-size: 22px 22px;
+	-webkit-mask-image: radial-gradient(120% 100% at 80% 100%, #000 0%, transparent 70%);
+	mask-image: radial-gradient(120% 100% at 80% 100%, #000 0%, transparent 70%);
+	opacity: 0.6;
+}
+
+/* Strong ease-out for entrance + UI motion — the stock CSS easings are too
+ * weak to feel intentional. Exposed as a token so components can reference it
+ * via Tailwind's `ease-[var(--ease-out-quint)]`. */
+:root {
+	--ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Staggered entrance used by the /products hero: a short fade + rise. The
+ * keyframe (not a static base style) carries the from-state, so the element's
+ * resting state stays fully visible if the animation is ever disabled. */
+@keyframes rise {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+.animate-rise {
+	animation: rise 420ms var(--ease-out-quint) both;
+}
+
+/* Honor OS "reduce motion" — the decorative orb/CTA animations run
+ * indefinitely and the rise translates content, so pin them to their resting
+ * frame for motion-sensitive users. Required by the redesign brief. */
+@media (prefers-reduced-motion: reduce) {
+	.animate-float-slow,
+	.animate-float-reverse,
+	.animate-pulse-glow,
+	.animate-shimmer,
+	.animate-rise,
+	.animate-lab-shimmer,
+	.animate-lab-float,
+	.animate-lab-pulse-ring {
+		animation: none !important;
+	}
+}

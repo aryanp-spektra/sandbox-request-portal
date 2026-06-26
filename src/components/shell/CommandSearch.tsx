@@ -23,12 +23,14 @@ export function CommandSearch({ open, onClose }: { open: boolean; onClose: () =>
     return pool.slice(0, 7);
   }, [q]);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (open) {
       setQ("");
       setActive(0);
     }
   }, [open]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     if (!open) return;

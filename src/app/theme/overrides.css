@@ -1,0 +1,60 @@
+/* ============================================================================
+ * THIRD-PARTY CSS OVERRIDES
+ *
+ * Targeted fixes for libraries that don't expose enough hooks to fix
+ * through component props or className alone. Keep these isolated so
+ * they don't get tangled with platform tokens.
+ * ============================================================================ */
+
+/* Chrome, Safari, Edge, Opera — hide the number-input spinner */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox — same goal for type=number */
+input[type='number'] {
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+/* Radix scroll-area viewport — without this the inner wrapper forces
+ * min-width that breaks tables/long-content inside scroll areas. */
+[data-radix-scroll-area-viewport] > div {
+	min-width: auto !important;
+	display: block !important;
+	height: inherit;
+	width: inherit;
+}
+
+/* Prevent overscroll/bounce on iOS Safari + Chrome */
+html,
+body {
+	overscroll-behavior: none;
+}
+
+/* 1Password injects a live region that causes layout shift — hide it. */
+#\31 p-live-region {
+	display: none !important;
+}
+
+/* Fumadocs heading anchor links — strip the auto-underline. */
+#nd-page .prose h1 a,
+#nd-page .prose h2 a,
+#nd-page .prose h3 a,
+#nd-page .prose h4 a,
+#nd-page .prose h5 a,
+#nd-page .prose h6 a {
+	@apply no-underline!;
+}
+
+/* Tabs in fumadocs use bg-secondary, but our muted is the correct surface. */
+div[role='tablist'].bg-secondary {
+	@apply bg-muted!;
+}
+
+/* cmdk input — strip its default border so it blends into popovers. */
+input[cmdk-input] {
+	@apply border-none focus-visible:ring-0;
+}

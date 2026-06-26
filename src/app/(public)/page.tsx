@@ -1,11 +1,11 @@
-import { Hero } from "./Hero";
+import { StoreLanding } from "./StoreLanding";
 import { LABS, catalogStats } from "@/lib/labs";
 import { SOLUTION_AREAS } from "@/lib/state";
 
 export const metadata = {
-  title: "Microsoft Sandbox, the FY27 lab catalog",
+  title: "Microsoft Sandbox Store — the FY27 lab catalog",
   description:
-    "A single self-service catalog of Microsoft guided labs, hackathons and sandboxes across AI, cloud and security. Browse, compare and request access in minutes.",
+    "A single self-service store of Microsoft guided labs, hackathons and sandboxes across AI, cloud and security. Browse, compare and request access in minutes.",
 };
 
 export default function HomePage() {
@@ -15,5 +15,5 @@ export default function HomePage() {
     count: LABS.filter((l) => l.solutionArea === name).length,
   }));
 
-  return <Hero stats={stats} areas={areas} />;
+  return <StoreLanding stats={stats} areas={areas} />;
 }

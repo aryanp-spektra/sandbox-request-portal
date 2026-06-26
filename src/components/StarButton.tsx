@@ -86,11 +86,11 @@ export function StarButton({
         pending && "opacity-70",
         dark
           ? starred
-            ? "border-white/30 bg-white/95 text-[#4d3cb3] shadow-soft"
+            ? "border-white/30 bg-white/95 text-[#4d3cb3]"
             : "border-white/25 bg-white/10 text-white backdrop-blur hover:bg-white/20"
           : starred
-          ? "border-[color-mix(in_srgb,var(--color-primary)_40%,var(--color-line))] bg-[color-mix(in_srgb,var(--color-primary)_10%,var(--color-surface))] text-primary"
-          : "border-line bg-surface text-slate hover:border-[color-mix(in_srgb,var(--color-primary)_35%,var(--color-line))] hover:text-primary"
+          ? "border-primary/40 bg-primary/10 text-primary"
+          : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
       )}
     >
       <Star

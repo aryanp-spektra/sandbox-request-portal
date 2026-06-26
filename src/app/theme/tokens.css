@@ -1,0 +1,126 @@
+/* ============================================================================
+ * PLATFORM SEMANTIC TOKENS
+ *
+ * Light + dark mode. Brand purple lives in brand.css — everything else
+ * (background/foreground/card/border/sidebar) is the shared platform palette.
+ *
+ * Active-accent tokens (--accent-active-*) are the light-purple highlight
+ * used on active sidebar items. They're remapped onto --sidebar-accent below
+ * so the Shadcn sidebar primitive picks them up without component edits.
+ * ============================================================================ */
+
+:root {
+	--background: var(--color-white);
+	--foreground: var(--color-neutral-950);
+
+	--card: var(--color-white);
+	--card-foreground: var(--color-neutral-950);
+
+	--popover: var(--color-white);
+	--popover-foreground: var(--color-neutral-950);
+
+	--primary: var(--brand);
+	--primary-foreground: var(--brand-fg);
+
+	--secondary: oklch(96.76% 0.0013 286.38);
+	--secondary-foreground: oklch(21.03% 0.0318 264.65);
+
+	--muted: oklch(96.71% 0.0029 264.54);
+	--muted-foreground: oklch(55.13% 0.0233 264.36);
+
+	--accent: oklch(96.76% 0.0013 286.38);
+	--accent-foreground: oklch(21.03% 0.0318 264.65);
+
+	--destructive: var(--color-red-500);
+	--destructive-foreground: var(--color-white);
+
+	--border: var(--color-neutral-200);
+	--input: var(--color-neutral-200);
+	--ring: var(--brand);
+	--input-ring: var(--brand);
+
+	--chart-1: var(--brand); /* Primary purple - Open */
+	--chart-2: var(--color-teal-600); /* Teal - Closed */
+	--chart-3: var(--color-blue-500); /* Blue - Scheduled */
+	--chart-4: var(--color-emerald-500); /* Green - Completed */
+	--chart-5: var(--color-rose-500); /* Rose - Cancelled */
+	--chart-6: var(--color-amber-500); /* Amber - On Hold */
+
+	--radius: 0.5rem;
+
+	/* Active-accent — light purple highlight for active nav/menu items.
+	 * Remapped onto --sidebar-accent below so the Shadcn sidebar picks it up.
+	 * Foreground cascades from --brand so a brand swap re-skins both buttons
+	 * and active states with one edit. */
+	--accent-active-bg: oklch(from var(--brand) 97% 0.02 h);
+	--accent-active-border: oklch(from var(--brand) 60% 0.2 h);
+	--accent-active-fg: var(--brand);
+
+	/* Density tokens — consumed by component variants in components/ui/*.
+	 * Keep these in sync with the cva defaults if you change either. */
+	--app-button-h: 2rem;
+	--app-input-h: 2rem;
+	--app-input-h-sm: 1.75rem;
+
+	--sidebar: var(--color-neutral-50);
+	--sidebar-foreground: oklch(37.05% 0.012 285.8);
+	--sidebar-primary: var(--brand);
+	--sidebar-primary-foreground: var(--brand-fg);
+	--sidebar-accent: var(--accent-active-bg);
+	--sidebar-accent-foreground: var(--accent-active-fg);
+	--sidebar-border: var(--border);
+	--sidebar-ring: var(--ring);
+}
+
+.dark {
+	--background: var(--color-neutral-900);
+	--foreground: var(--color-white);
+
+	--card: var(--color-neutral-900);
+	--card-foreground: var(--color-white);
+
+	--popover: var(--color-neutral-900);
+	--popover-foreground: var(--color-white);
+
+	--primary: var(--brand);
+	--primary-foreground: var(--brand-fg);
+
+	--secondary: var(--color-neutral-800);
+	--secondary-foreground: oklch(98.43% 0.0017 247.84);
+
+	--muted: var(--color-neutral-800);
+	--muted-foreground: oklch(71.19% 0.0129 286.07);
+
+	--accent: var(--color-neutral-800);
+	--accent-foreground: oklch(98.48% 0 0);
+
+	--destructive: var(--color-red-700);
+	--destructive-foreground: var(--color-white);
+
+	--border: var(--color-neutral-700);
+	--input: var(--color-neutral-700);
+	--ring: var(--brand);
+	--input-ring: var(--brand);
+
+	--chart-1: var(--brand); /* Primary purple - Open */
+	--chart-2: var(--color-teal-400); /* Teal - Closed */
+	--chart-3: var(--color-blue-400); /* Blue - Scheduled */
+	--chart-4: var(--color-emerald-400); /* Green - Completed */
+	--chart-5: var(--color-rose-400); /* Rose - Cancelled */
+	--chart-6: var(--color-amber-400); /* Amber - On Hold */
+
+	/* Same cascading: dark-mode active bg/border/fg derived from --brand so a
+	 * brand swap re-skins the dark mode too. */
+	--accent-active-bg: oklch(from var(--brand) 28% calc(c * 0.3) h);
+	--accent-active-border: oklch(from var(--brand) 60% 0.2 h);
+	--accent-active-fg: oklch(from var(--brand) 95% calc(c * 0.3) h);
+
+	--sidebar: var(--color-neutral-950);
+	--sidebar-foreground: var(--color-white);
+	--sidebar-primary: var(--brand);
+	--sidebar-primary-foreground: var(--brand-fg);
+	--sidebar-accent: var(--accent-active-bg);
+	--sidebar-accent-foreground: var(--accent-active-fg);
+	--sidebar-border: var(--border);
+	--sidebar-ring: var(--ring);
+}
