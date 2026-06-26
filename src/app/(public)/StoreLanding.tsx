@@ -50,14 +50,7 @@ export function StoreLanding({ stats, areas }: { stats: Stats; areas: AreaCard[]
     <main>
       {/* ── Hero (centered, catalog) ─────────────────────────────────────── */}
       <section className="relative overflow-hidden border-b">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background:
-              "radial-gradient(820px 380px at 50% -10%, color-mix(in srgb, var(--brand) 14%, transparent), transparent 65%)",
-          }}
-        />
+        <div aria-hidden className="hero-aura -z-10" />
         <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:py-24">
           <div
             className="flex justify-center"

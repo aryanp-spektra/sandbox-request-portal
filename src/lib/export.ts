@@ -14,6 +14,17 @@ function numberedModules(modules: string[]): string {
   return modules.map((m, i) => `${i + 1}. ${m}`).join("\n");
 }
 
+/** "Last refreshed" label for the PDF meta rail. */
+function refreshLabel(iso: string | null): string {
+  if (!iso) return "New for Build 2026";
+  return new Date(iso).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+
+/** Most offerings are hands-on; pure skilling content is the exception. */
+function handsOnLabel(type: string): string {
+  return type === "gps-skilling" ? "No" : "Yes";
+}
+
 /* ════════════════════════════════════════════════════════════════════════
    EXCEL — GPS Catalog column layout
    ════════════════════════════════════════════════════════════════════════ */
@@ -206,12 +217,17 @@ export async function exportPDF(labs: Lab[], label = "Full catalog") {
   doc.setTextColor(198, 190, 232);
   doc.text("Powered by CloudLabs — Spektra Systems", M, H - 54);
 
-  /* ── helpers for lab pages ──────────────────────────────────────────── */
+  /* ── column-aware flow helpers (the right-hand content column on the
+       first page; full width on any continuation page) ──────────────────── */
   let y = 0;
+  let colX = M;
+  let colW = CW;
   const ensure = (need: number) => {
     if (y + need > H - 54) {
       doc.addPage();
       y = 64;
+      colX = M; // continuation pages flow full width
+      colW = CW;
     }
   };
   const heading = (text: string) => {
@@ -221,40 +237,51 @@ export async function exportPDF(labs: Lab[], label = "Full catalog") {
     doc.setFontSize(9.5);
     doc.setTextColor(...BRAND);
     doc.setCharSpace(1.2);
-    doc.text(text.toUpperCase(), M, y);
+    doc.text(text.toUpperCase(), colX, y);
     doc.setCharSpace(0);
     y += 7;
     doc.setDrawColor(...LINE);
     doc.setLineWidth(0.7);
-    doc.line(M, y, M + CW, y);
+    doc.line(colX, y, colX + colW, y);
     y += 15;
   };
   const para = (text: string, size = 9.7, color = INK, lh = 13.5) => {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(size);
     doc.setTextColor(...color);
-    const lines = doc.splitTextToSize(text, CW) as string[];
+    const lines = doc.splitTextToSize(text, colW) as string[];
     for (const ln of lines) {
       ensure(lh);
-      doc.text(ln, M, y);
+      doc.text(ln, colX, y);
       y += lh;
     }
   };
 
-  /* ── one page per lab ───────────────────────────────────────────────── */
+  /* ── one page per lab — Day-Plan-style one-pager ────────────────────── */
+  // Left meta rail geometry + field-block metrics (shared by measure + draw).
+  const RAIL_W = 172;
+  const RAIL_GAP = 20;
+  const RAIL_PAD = 13;
+  const LABEL_GAP = 11;
+  const VALUE_LH = 11;
+  const FIELD_GAP = 9;
+
   labs.forEach((l, i) => {
     doc.addPage();
 
-    // header band
-    const bandH = 118;
+    /* header band — breadcrumb + offering·status ribbon + title */
+    const bandH = 110;
     doc.setFillColor(...BRAND);
     doc.rect(0, 0, W, bandH, "F");
+    doc.setFillColor(...BRAND_DARK);
+    doc.circle(W + 16, -12, 110, "F"); // soft corner glow
 
+    // eyebrow: offering type · position
     doc.setTextColor(232, 224, 250);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8.5);
+    doc.setFontSize(8);
     doc.setCharSpace(1.5);
-    doc.text(`${l.typeLabel.toUpperCase()}   ·   LAB ${i + 1} OF ${labs.length}`, M, 40);
+    doc.text(`${l.typeLabel.toUpperCase()}   ·   LAB ${i + 1} OF ${labs.length}`, M, 34);
     doc.setCharSpace(0);
 
     // status pill (top-right)
@@ -263,110 +290,128 @@ export async function exportPDF(labs: Lab[], label = "Full catalog") {
     doc.setFont("helvetica", "bold");
     const pw = doc.getTextWidth(pill) + 20;
     doc.setFillColor(255, 255, 255);
-    doc.roundedRect(W - M - pw, 26, pw, 18, 9, 9, "F");
+    doc.roundedRect(W - M - pw, 22, pw, 18, 9, 9, "F");
     doc.setTextColor(...BRAND_DARK);
-    doc.text(pill, W - M - pw + 10, 38.5);
+    doc.text(pill, W - M - pw + 10, 34.5);
 
-    // title (white, up to 2 lines)
+    // breadcrumb
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    doc.setTextColor(214, 206, 244);
+    const crumb = ["Home", l.fy27Area, l.fy27Play].filter(Boolean).join("   >   ");
+    doc.text((doc.splitTextToSize(crumb, CW) as string[])[0], M, 54);
+
+    // title (up to 2 lines)
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(20);
+    doc.setFontSize(19);
     const titleLines = (doc.splitTextToSize(l.title, CW) as string[]).slice(0, 2);
-    let ty = 72;
+    let ty = 80;
     for (const ln of titleLines) {
       doc.text(ln, M, ty);
-      ty += 24;
+      ty += 22;
     }
 
-    // meta card
-    y = bandH + 22;
+    /* two-column body: left meta rail (first page only) + right content flow */
+    const bodyTop = bandH + 22;
+    const railX = M;
+    const rightX = M + RAIL_W + RAIL_GAP;
+    const rightW = CW - RAIL_W - RAIL_GAP;
+
+    // meta fields — our terminology / data
     const fields: [string, string][] = [
+      ["Offering", l.typeLabel],
+      ["Status", l.catalogStatus],
+      ["Level", l.level || "—"],
+      ["Duration", l.durationHours ? `${l.durationHours} hours` : "—"],
+      ["Hands-on labs", handsOnLabel(l.type)],
+      ["Delivery", l.style || "—"],
       ["FY27 Solution Area", l.fy27Area || "—"],
       ["FY27 Solution Play", l.fy27Play || "—"],
-      ["FY26 Solution Area", l.fy26Area || "—"],
-      ["FY26 Solution Play", l.fy26Play || "—"],
-      ["Level", l.level || "—"],
-      ["Style", l.style || "—"],
-      ["Duration", l.durationHours ? `${l.durationHours} hours` : "—"],
-      ["Featured products", `${l.products.length} products`],
+      ["Featured products", String(l.products.length)],
+      ["Last refreshed", refreshLabel(l.lastRefresh)],
     ];
-    const rowsN = 4;
-    const colW = CW / 2;
-    const rowH = 26;
-    const cardH = rowsN * rowH + 16;
+    const valW = RAIL_W - RAIL_PAD * 2;
+    const wrapped = fields.map(([, v]) => doc.splitTextToSize(v, valW) as string[]);
+    let railH = 14;
+    for (const lines of wrapped) railH += LABEL_GAP + lines.length * VALUE_LH + FIELD_GAP;
+    railH += 4;
+
     doc.setFillColor(...TINT);
     doc.setDrawColor(...LINE);
     doc.setLineWidth(0.7);
-    doc.roundedRect(M, y, CW, cardH, 8, 8, "F");
-    doc.roundedRect(M, y, CW, cardH, 8, 8, "S");
+    doc.roundedRect(railX, bodyTop, RAIL_W, railH, 8, 8, "F");
+    doc.roundedRect(railX, bodyTop, RAIL_W, railH, 8, 8, "S");
 
-    fields.forEach(([k, v], idx) => {
-      const col = idx < rowsN ? 0 : 1;
-      const row = idx % rowsN;
-      const cx = M + 14 + col * colW;
-      const cy = y + 18 + row * rowH;
+    let fy = bodyTop + 20;
+    fields.forEach(([k], idx) => {
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(6.8);
+      doc.setFontSize(6.6);
       doc.setTextColor(...FAINT);
-      doc.setCharSpace(0.8);
-      doc.text(k.toUpperCase(), cx, cy);
+      doc.setCharSpace(0.6);
+      doc.text(k.toUpperCase(), railX + RAIL_PAD, fy);
       doc.setCharSpace(0);
+      fy += LABEL_GAP;
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.5);
+      doc.setFontSize(9);
       doc.setTextColor(...INK);
-      const val = (doc.splitTextToSize(v, colW - 28) as string[])[0] ?? v;
-      doc.text(val, cx, cy + 12);
+      for (const ln of wrapped[idx]) {
+        doc.text(ln, railX + RAIL_PAD, fy);
+        fy += VALUE_LH;
+      }
+      fy += FIELD_GAP;
     });
-    y += cardH + 18;
 
-    // tagline / hook
+    // right content column
+    colX = rightX;
+    colW = rightW;
+    y = bodyTop;
+
+    // hook lead-in (italic)
     if (l.hook) {
       doc.setFont("helvetica", "italic");
       doc.setFontSize(10.5);
       doc.setTextColor(...BRAND_DARK);
-      const hookLines = doc.splitTextToSize(l.hook, CW) as string[];
-      for (const ln of hookLines) {
+      for (const ln of doc.splitTextToSize(l.hook, colW) as string[]) {
         ensure(14);
-        doc.text(ln, M, y);
+        doc.text(ln, colX, y);
         y += 14;
       }
       y += 8;
     }
 
-    // overview
     if (l.overview) {
-      heading("Overview");
+      heading("About this lab");
       para(l.overview);
       y += 6;
     }
 
-    // modules (numbered, hanging indent)
     if (l.modules.length) {
-      heading("Lab modules & exercises");
+      heading("What you'll cover");
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9.7);
       l.modules.forEach((m, idx) => {
         const num = `${idx + 1}.`;
-        const lines = doc.splitTextToSize(m, CW - 24) as string[];
+        const lines = doc.splitTextToSize(m, colW - 24) as string[];
         ensure(lines.length * 13.5 + 2);
         doc.setTextColor(...BRAND);
         doc.setFont("helvetica", "bold");
-        doc.text(num, M, y);
+        doc.text(num, colX, y);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(...INK);
-        lines.forEach((ln, j) => {
-          doc.text(ln, M + 24, y + j * 13.5);
-        });
+        lines.forEach((ln, j) => doc.text(ln, colX + 24, y + j * 13.5));
         y += lines.length * 13.5 + 4;
       });
       y += 6;
     }
 
-    // featured products
     if (l.products.length) {
       heading("Featured products");
       para(l.products.join(",  "), 9.5, MUT, 13.5);
     }
+
+    // ensure the page is at least as tall as the meta rail before the footer
+    if (y < bodyTop + railH) y = bodyTop + railH;
   });
 
   /* ── footers (CloudLabs mark + page numbers + brand rule) ───────────── */

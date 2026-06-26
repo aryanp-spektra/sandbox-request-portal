@@ -148,14 +148,7 @@ export function ExploreClient() {
     <main>
       {/* header band */}
       <section className="relative overflow-hidden border-b">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background:
-              "radial-gradient(700px 260px at 0% -20%, color-mix(in srgb, var(--brand) 12%, transparent), transparent 60%)",
-          }}
-        />
+        <div aria-hidden className="hero-aura -z-10" />
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
           <h1 className="font-bold text-3xl tracking-display sm:text-4xl">Explore the catalog</h1>
           <p className="mt-2 max-w-2xl text-muted-foreground text-sm">

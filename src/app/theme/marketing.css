@@ -52,6 +52,76 @@
 	--marketing-card-hover: var(--color-neutral-800);
 }
 
+/* ============================================================================
+ * HERO AURA — the premium violet glow behind hero / section header bands.
+ *
+ * Layered low-opacity radial glows + a masked dot-grid for depth. Tuned per
+ * theme: subtle on the light canvas, a touch richer on the near-black dark
+ * canvas so the hero never reads as a flat slab. Apply to an aria-hidden,
+ * absolutely-positioned layer inside a `position: relative; overflow: hidden`
+ * section (see StoreLanding / ExploreClient header bands).
+ * ============================================================================ */
+.hero-aura {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background:
+		radial-gradient(
+			72% 56% at 50% -12%,
+			color-mix(in srgb, var(--brand) 17%, transparent),
+			transparent 60%
+		),
+		radial-gradient(
+			38% 44% at 88% 6%,
+			color-mix(in srgb, var(--brand) 11%, transparent),
+			transparent 55%
+		),
+		radial-gradient(
+			40% 46% at 6% 22%,
+			color-mix(in srgb, var(--brand) 8%, transparent),
+			transparent 55%
+		);
+}
+
+/* Masked dot-grid overlay — extremely faint, fades toward the bottom so it
+ * only adds texture near the top of the band. */
+.hero-aura::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image: radial-gradient(
+		color-mix(in srgb, var(--brand) 22%, transparent) 1px,
+		transparent 1px
+	);
+	background-size: 22px 22px;
+	-webkit-mask-image: radial-gradient(80% 70% at 50% 0%, #000 0%, transparent 72%);
+	mask-image: radial-gradient(80% 70% at 50% 0%, #000 0%, transparent 72%);
+	opacity: 0.4;
+}
+
+.dark .hero-aura {
+	background:
+		radial-gradient(
+			72% 58% at 50% -14%,
+			color-mix(in srgb, var(--brand) 32%, transparent),
+			transparent 62%
+		),
+		radial-gradient(
+			42% 48% at 88% 4%,
+			color-mix(in srgb, var(--brand) 20%, transparent),
+			transparent 58%
+		),
+		radial-gradient(
+			44% 50% at 5% 18%,
+			color-mix(in srgb, var(--brand) 15%, transparent),
+			transparent 58%
+		);
+}
+
+.dark .hero-aura::after {
+	opacity: 0.5;
+}
+
 /* Marketing page animations — used by the landing hero gradient orbs and
  * certain accent strips. Kept in marketing.css since they're surface-specific. */
 @keyframes float-slow {
