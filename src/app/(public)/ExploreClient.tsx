@@ -8,6 +8,8 @@ import { LABS, FACETS, lastUpdatedLabel } from "@/lib/labs";
 import { TYPE_META } from "@/lib/state";
 import type { Lab, Lifecycle } from "@/lib/types";
 import { LabCard } from "@/components/marketplace/LabCard";
+import { RequestCustomLab } from "@/components/marketplace/RequestCustomLab";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -145,13 +147,29 @@ export function ExploreClient() {
   return (
     <main>
       {/* header band */}
-      <section className="border-b bg-marketing-bg-subtle">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <h1 className="font-bold text-3xl tracking-display sm:text-4xl">Explore the catalog</h1>
-          <p className="mt-2 max-w-2xl text-muted-foreground text-sm">
-            Every guided lab, hackathon and sandbox, mapped from FY26 to the FY27 solution plays.
-            Filter by area, level or technology, and export to Excel or PDF. Updated {lastUpdatedLabel()}.
-          </p>
+      <section className="relative overflow-hidden border-b">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{
+            background:
+              "radial-gradient(700px 260px at 0% -20%, color-mix(in srgb, var(--brand) 12%, transparent), transparent 60%)",
+          }}
+        />
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-10 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
+          <div>
+            <h1 className="font-bold text-3xl tracking-display sm:text-4xl">Explore the catalog</h1>
+            <p className="mt-2 max-w-2xl text-muted-foreground text-sm">
+              Every guided lab, hackathon and sandbox, mapped from FY26 to the FY27 solution plays.
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2.5 text-muted-foreground text-xs">
+              <Badge variant="secondary" className="font-medium">{LABS.length} labs</Badge>
+              <span>Updated {lastUpdatedLabel()}</span>
+            </div>
+          </div>
+          <div className="shrink-0">
+            <RequestCustomLab variant="outline" size="default" />
+          </div>
         </div>
       </section>
 
