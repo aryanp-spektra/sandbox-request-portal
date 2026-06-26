@@ -6,18 +6,11 @@ import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-/** Deterministic hue per lab so each card's accent strip/icon varies a little
- *  while staying in the violet brand family. */
-function hueForSeed(seed: string): number {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) % 360;
-  // bias toward the brand violet band (250–300)
-  return 250 + (h % 50);
-}
-
 export function LabCard({ lab }: { lab: Lab }) {
   const meta = TYPE_META[lab.type];
-  const hue = hueForSeed(lab.id);
+  // Subtle per-offering-type accent, all within the CloudLabs violet family.
+  const accent = meta.accent;
+  const accent2 = meta.accent2;
 
   return (
     <article className="group relative h-full">
@@ -28,13 +21,11 @@ export function LabCard({ lab }: { lab: Lab }) {
           "hover:border-primary/40 hover:shadow-lg motion-safe:hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
         )}
       >
-        {/* accent strip */}
+        {/* accent strip — offering-type tint, violet family */}
         <div
           aria-hidden
           className="h-1"
-          style={{
-            background: `linear-gradient(90deg, hsl(${hue} 55% 55%) 0%, hsl(${(hue + 35) % 360} 55% 58%) 100%)`,
-          }}
+          style={{ background: `linear-gradient(90deg, ${accent} 0%, ${accent2} 100%)` }}
         />
 
         <div className="flex flex-1 flex-col p-5">
@@ -42,9 +33,9 @@ export function LabCard({ lab }: { lab: Lab }) {
             <span
               className="flex size-10 shrink-0 items-center justify-center rounded-xl border"
               style={{
-                borderColor: `color-mix(in srgb, hsl(${hue} 50% 50%) 26%, transparent)`,
-                background: `color-mix(in srgb, hsl(${hue} 55% 55%) 10%, transparent)`,
-                color: `hsl(${hue} 55% 48%)`,
+                borderColor: `color-mix(in srgb, ${accent} 24%, transparent)`,
+                background: `color-mix(in srgb, ${accent} 9%, transparent)`,
+                color: accent,
               }}
             >
               <LayersIcon className="size-5" />
