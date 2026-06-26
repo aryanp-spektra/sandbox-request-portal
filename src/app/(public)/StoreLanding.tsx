@@ -5,10 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   SearchIcon, ArrowRightIcon, SparklesIcon, CloudIcon, ShieldCheckIcon,
-  BoxesIcon, ZapIcon, LockIcon, LayoutGridIcon,
+  BoxesIcon, LayoutGridIcon,
 } from "lucide-react";
 import type { Lifecycle } from "@/lib/types";
 import { LIFECYCLE } from "@/lib/state";
+import { BrandMark } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
@@ -47,103 +48,68 @@ export function StoreLanding({ stats, areas }: { stats: Stats; areas: AreaCard[]
 
   return (
     <main>
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      {/* ── Hero (centered, catalog) ─────────────────────────────────────── */}
       <section className="relative overflow-hidden border-b">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
             background:
-              "radial-gradient(900px 420px at 12% -10%, color-mix(in srgb, var(--brand) 18%, transparent), transparent 60%), radial-gradient(720px 420px at 92% 0%, color-mix(in srgb, var(--brand) 10%, transparent), transparent 58%)",
+              "radial-gradient(820px 380px at 50% -10%, color-mix(in srgb, var(--brand) 14%, transparent), transparent 65%)",
           }}
         />
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.4fr_1fr] lg:px-8 lg:py-20">
-          {/* left: pitch + search */}
-          <div className="animate-rise">
-            <span className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 font-medium text-muted-foreground text-xs">
-              <SparklesIcon className="size-3.5 text-primary" />
-              FY27 Catalog · Build 2026 roadmap
-            </span>
-            <h1 className="mt-5 text-balance font-bold text-4xl leading-[1.05] tracking-display sm:text-5xl lg:text-6xl">
-              Microsoft Sandbox <span className="text-primary">Store</span>
-            </h1>
-            <p className="mt-4 max-w-xl text-base text-muted-foreground leading-relaxed sm:text-lg">
-              Hands-on labs, hackathons and sandboxes across AI, cloud and security —
-              everything you need to upskill teams and run customer engagements, fast.
-            </p>
-
-            {/* search */}
-            <div className="mt-7 flex max-w-xl items-center gap-2">
-              <div className="relative flex-1">
-                <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-muted-foreground" />
-                <Input
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && search()}
-                  placeholder="Search labs, sandboxes, technologies…"
-                  className="h-11 pl-9 text-sm"
-                  aria-label="Search the catalog"
-                />
-              </div>
-              <Button size="lg" className="h-11" onClick={() => search()}>
-                Search
-                <ArrowRightIcon className="size-4" />
-              </Button>
-            </div>
-
-            {/* try chips */}
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              <span className="text-muted-foreground text-xs">Try:</span>
-              {TRY_CHIPS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => search(c)}
-                  className="rounded-full border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
+        <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:py-24">
+          <div
+            className="flex justify-center"
+            style={{ filter: "drop-shadow(0 10px 26px color-mix(in srgb, var(--brand) 28%, transparent))" }}
+          >
+            <BrandMark size={52} />
           </div>
 
-          {/* right: partner access panel */}
-          <div className="animate-rise lg:pl-4">
-            <div className="rounded-xl border bg-card p-6 shadow-md">
-              <div className="flex items-center gap-2 font-semibold">
-                <span className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <LockIcon className="size-4" />
-                </span>
-                Partner access
-              </div>
-              <p className="mt-3 text-muted-foreground text-sm leading-relaxed">
-                Sign in to request vouchers, track delivery SLAs, and manage your sandbox engagements.
-              </p>
-              <ul className="mt-4 space-y-2 text-sm">
-                {["Request vouchers in a click", "Track fulfillment & SLAs", "Save labs you're interested in"].map((f) => (
-                  <li key={f} className="flex items-center gap-2 text-muted-foreground">
-                    <span className="text-primary">✓</span> {f}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-5 space-y-2">
-                <Button asChild className="w-full">
-                  <Link href="/portal">Open partner portal <ArrowRightIcon className="size-4" /></Link>
-                </Button>
-                <Button asChild variant="outline" className="w-full">
-                  <Link href="/login">Sign in</Link>
-                </Button>
-              </div>
-              <div className="mt-5 border-t pt-4">
-                <p className="text-muted-foreground text-xs">Can&apos;t find the lab you need?</p>
-                <Link
-                  href="/explore"
-                  className="mt-1 inline-flex items-center gap-1.5 font-medium text-primary text-sm hover:underline"
-                >
-                  <SparklesIcon className="size-3.5" /> Browse the full catalog
-                </Link>
-              </div>
+          <span className="mt-6 inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 font-medium text-muted-foreground text-xs">
+            <SparklesIcon className="size-3.5 text-primary" />
+            FY27 Catalog · Build 2026 roadmap
+          </span>
+
+          <h1 className="mt-5 text-balance font-bold text-4xl leading-[1.05] tracking-display sm:text-5xl lg:text-6xl">
+            The Microsoft Sandbox <span className="text-primary">catalog</span>
+          </h1>
+          <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground leading-relaxed sm:text-lg">
+            Every guided lab, hackathon and sandbox across AI, cloud and security —
+            browse, compare and request access in minutes.
+          </p>
+
+          {/* search */}
+          <div className="mx-auto mt-8 flex max-w-xl items-center gap-2">
+            <div className="relative flex-1">
+              <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-muted-foreground" />
+              <Input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && search()}
+                placeholder="Search labs, sandboxes, technologies…"
+                className="h-11 pl-9 text-sm"
+                aria-label="Search the catalog"
+              />
             </div>
+            <Button size="lg" className="h-11" onClick={() => search()}>
+              Search
+              <ArrowRightIcon className="size-4" />
+            </Button>
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+            <span className="text-muted-foreground text-xs">Try:</span>
+            {TRY_CHIPS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => search(c)}
+                className="rounded-full border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+              >
+                {c}
+              </button>
+            ))}
           </div>
         </div>
       </section>
@@ -152,16 +118,13 @@ export function StoreLanding({ stats, areas }: { stats: Stats; areas: AreaCard[]
       <section className="border-b bg-marketing-bg-subtle">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 lg:grid-cols-4 lg:px-8">
           {[
-            { value: stats.total, suffix: "", label: "Labs in the catalog" },
-            { value: stats.instant, suffix: "", label: "Ready for instant access" },
-            { value: stats.solutionAreas, suffix: "", label: "Solution areas" },
-            { value: stats.types, suffix: "", label: "Lab formats" },
+            { value: stats.total, label: "Labs in the catalog" },
+            { value: stats.instant, label: "Ready for instant access" },
+            { value: stats.solutionAreas, label: "Solution areas" },
+            { value: stats.types, label: "Lab formats" },
           ].map((s) => (
-            <div key={s.label}>
-              <div className="font-bold text-3xl tracking-display sm:text-4xl">
-                {s.value.toLocaleString()}
-                {s.suffix}
-              </div>
+            <div key={s.label} className="text-center">
+              <div className="font-bold text-3xl tracking-display sm:text-4xl">{s.value.toLocaleString()}</div>
               <div className="mt-1 text-muted-foreground text-xs uppercase tracking-wider">{s.label}</div>
             </div>
           ))}
@@ -235,16 +198,23 @@ export function StoreLanding({ stats, areas }: { stats: Stats; areas: AreaCard[]
         </div>
       </section>
 
-      {/* ── Closing CTA ──────────────────────────────────────────────────── */}
+      {/* ── Closing CTA (subtle, premium) ────────────────────────────────── */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-xl border bg-primary px-8 py-12 text-center text-primary-foreground sm:px-12">
-          <ZapIcon className="mx-auto size-7 opacity-90" />
-          <h2 className="mt-4 font-bold text-2xl tracking-display sm:text-3xl">Ready to dive into the catalog?</h2>
-          <p className="mx-auto mt-2 max-w-md text-primary-foreground/80 text-sm">
+        <div className="relative overflow-hidden rounded-2xl border bg-card px-8 py-12 text-center shadow-md sm:px-12">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10"
+            style={{
+              background:
+                "radial-gradient(600px 240px at 50% 0%, color-mix(in srgb, var(--brand) 12%, transparent), transparent 70%)",
+            }}
+          />
+          <h2 className="font-bold text-2xl tracking-display sm:text-3xl">Ready to dive into the catalog?</h2>
+          <p className="mx-auto mt-2 max-w-md text-muted-foreground text-sm">
             {stats.total} labs, filterable by area, level, product and format — with Excel and PDF export.
           </p>
           <div className="mt-7 flex justify-center">
-            <Button asChild size="lg" variant="secondary">
+            <Button asChild size="lg">
               <Link href="/explore">Explore catalog <ArrowRightIcon className="size-4" /></Link>
             </Button>
           </div>

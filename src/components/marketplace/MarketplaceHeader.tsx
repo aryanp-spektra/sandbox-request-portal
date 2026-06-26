@@ -74,12 +74,12 @@ export function MarketplaceHeader() {
           </DropdownMenu>
         </nav>
 
-        <div className="ml-auto flex shrink-0 items-center gap-1.5">
+        <div className="ml-auto flex shrink-0 items-center gap-1">
           <ThemeToggle />
-          <Button asChild size="sm" variant="ghost">
+          <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
             <Link href="/login">Sign in</Link>
           </Button>
-          <Button asChild size="sm">
+          <Button asChild size="sm" variant="outline">
             <Link href="/portal">Partner portal</Link>
           </Button>
         </div>
