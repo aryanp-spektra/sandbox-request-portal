@@ -18,17 +18,9 @@ const COLUMNS = [
     heading: "Resources",
     links: [
       { label: "Support", href: "/support" },
-      { label: "CloudLabs Help Center", href: "https://help.cloudlabs.ai", external: true },
-      { label: "Spektra Systems", href: "https://www.spektrasystems.com", external: true },
+      { label: "Request a custom lab", href: "/explore" },
     ],
   },
-];
-
-// TODO: point these at the real Terms / Privacy / Cookie pages once published.
-const LEGAL = [
-  { label: "Terms of Service", href: "https://www.spektrasystems.com" },
-  { label: "Privacy Policy", href: "https://www.spektrasystems.com" },
-  { label: "Cookie Policy", href: "https://www.spektrasystems.com" },
 ];
 
 const linkClass = "text-muted-foreground text-sm transition-colors hover:text-foreground";
@@ -83,19 +75,9 @@ export function MarketplaceFooter() {
           <p className="text-muted-foreground text-xs">
             © {new Date().getFullYear()} Spektra Systems. Microsoft Sandbox, powered by CloudLabs.
           </p>
-          <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
-            {LEGAL.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground text-xs transition-colors hover:text-foreground hover:underline"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
+          <p className="text-muted-foreground text-xs">
+            FY27 lab catalog · {LABS.length} labs
+          </p>
         </div>
       </div>
     </footer>

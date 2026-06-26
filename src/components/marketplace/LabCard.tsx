@@ -3,10 +3,11 @@ import { ArrowRightIcon, LayersIcon, ClockIcon, SparklesIcon } from "lucide-reac
 import type { Lab } from "@/lib/types";
 import { TYPE_META } from "@/lib/state";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
+import { CardStar } from "@/components/CardStar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-export function LabCard({ lab }: { lab: Lab }) {
+export function LabCard({ lab, starCount }: { lab: Lab; starCount?: number }) {
   const meta = TYPE_META[lab.type];
   // Subtle per-offering-type accent, all within the CloudLabs violet family.
   const accent = meta.accent;
@@ -14,6 +15,10 @@ export function LabCard({ lab }: { lab: Lab }) {
 
   return (
     <article className="group relative h-full">
+      {/* interest star — overlay sibling of the card link, never nested inside it */}
+      <div className="absolute right-3 top-3 z-10">
+        <CardStar labId={lab.id} count={starCount} />
+      </div>
       <Link
         href={`/labs/${lab.id}`}
         className={cn(
@@ -29,7 +34,7 @@ export function LabCard({ lab }: { lab: Lab }) {
         />
 
         <div className="flex flex-1 flex-col p-5">
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-2.5 pr-10">
             <span
               className="flex size-10 shrink-0 items-center justify-center rounded-xl border"
               style={{

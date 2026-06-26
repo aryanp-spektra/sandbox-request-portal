@@ -122,6 +122,71 @@
 	opacity: 0.5;
 }
 
+/* ============================================================================
+ * AMBIENT APP BACKGROUND — a subtle, slowly drifting brand glow behind the
+ * whole public surface so empty background areas never read as a flat slab.
+ * Two fixed, heavily-blurred brand orbs at low opacity. Tuned per theme
+ * (a touch richer on the near-black dark canvas) and pinned for reduced motion.
+ * Apply `.app-ambient` to a wrapper; its direct children are lifted above the
+ * glow via z-index so content (and pointer events) stay unaffected.
+ * ============================================================================ */
+.app-ambient {
+	position: relative;
+	isolation: isolate;
+}
+.app-ambient > * {
+	position: relative;
+	z-index: 1;
+}
+.app-ambient::before,
+.app-ambient::after {
+	content: "";
+	position: fixed;
+	z-index: 0;
+	pointer-events: none;
+	border-radius: 9999px;
+	filter: blur(70px);
+	will-change: transform;
+}
+.app-ambient::before {
+	top: -12%;
+	left: -8%;
+	width: 46vw;
+	height: 46vw;
+	background: radial-gradient(
+		circle at center,
+		color-mix(in srgb, var(--brand) 22%, transparent),
+		transparent 70%
+	);
+	animation: float-slow 28s ease-in-out infinite;
+}
+.app-ambient::after {
+	right: -10%;
+	bottom: -16%;
+	width: 52vw;
+	height: 52vw;
+	background: radial-gradient(
+		circle at center,
+		color-mix(in srgb, var(--brand) 17%, transparent),
+		transparent 70%
+	);
+	animation: float-reverse 34s ease-in-out infinite;
+}
+.dark .app-ambient::before {
+	background: radial-gradient(
+		circle at center,
+		color-mix(in srgb, var(--brand) 26%, transparent),
+		transparent 70%
+	);
+}
+.dark .app-ambient::after {
+	background: radial-gradient(
+		circle at center,
+		color-mix(in srgb, var(--brand) 20%, transparent),
+		transparent 70%
+	);
+}
+
 /* Marketing page animations — used by the landing hero gradient orbs and
  * certain accent strips. Kept in marketing.css since they're surface-specific. */
 @keyframes float-slow {
@@ -335,7 +400,9 @@
 	.animate-rise,
 	.animate-lab-shimmer,
 	.animate-lab-float,
-	.animate-lab-pulse-ring {
+	.animate-lab-pulse-ring,
+	.app-ambient::before,
+	.app-ambient::after {
 		animation: none !important;
 	}
 }
