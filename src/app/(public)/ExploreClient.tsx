@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   SearchIcon, XIcon, FileSpreadsheetIcon, FileTextIcon, SlidersHorizontalIcon,
+  ChevronLeftIcon, ChevronRightIcon,
 } from "lucide-react";
 import { LABS, FACETS, lastUpdatedLabel } from "@/lib/labs";
 import { TYPE_META } from "@/lib/state";
@@ -39,6 +40,7 @@ const STATUS_OPTIONS: { key: Lifecycle | "all"; label: string }[] = [
 ];
 
 const ALL = "all";
+const PAGE_SIZE = 12; // 4 rows of 3 on desktop — balances page length vs. count
 
 export function ExploreClient() {
   const [ready, setReady] = useState(false);
@@ -51,6 +53,7 @@ export function ExploreClient() {
   const [status, setStatus] = useState<Lifecycle | "all">("all");
   const [sort, setSort] = useState<SortKey>("default");
   const [busy, setBusy] = useState<"xlsx" | "pdf" | null>(null);
+  const [page, setPage] = useState(1);
   const searchRef = useRef<HTMLInputElement>(null);
 
   const areaOf = useCallback((l: Lab) => (fy === "FY26" ? l.fy26Area : l.fy27Area), [fy]);
@@ -127,6 +130,25 @@ export function ExploreClient() {
   const activeCount = [area, play, level, type, status !== "all" ? status : null].filter(Boolean).length;
   const clearAll = () => {
     setArea(null); setPlay(null); setLevel(null); setType(null); setStatus("all"); setQ("");
+  };
+
+  // ── pagination ──────────────────────────────────────────────────────────
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const current = Math.min(page, pageCount);
+  const paged = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
+  const firstShown = filtered.length === 0 ? 0 : (current - 1) * PAGE_SIZE + 1;
+  const lastShown = Math.min(current * PAGE_SIZE, filtered.length);
+
+  // Reset to the first page whenever the result set changes.
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    setPage(1);
+  }, [q, area, play, level, type, status, sort, fy]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  const goToPage = (p: number) => {
+    setPage(p);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const runExport = async (kind: "xlsx" | "pdf") => {
@@ -245,7 +267,14 @@ export function ExploreClient() {
         {/* result bar */}
         <div className="mt-5 flex items-center justify-between gap-3">
           <p className="text-muted-foreground text-sm">
-            <span className="font-semibold text-foreground">{filtered.length}</span> labs
+            {filtered.length > 0 ? (
+              <>
+                Showing <span className="font-semibold text-foreground">{firstShown}–{lastShown}</span> of{" "}
+                <span className="font-semibold text-foreground">{filtered.length}</span> labs
+              </>
+            ) : (
+              <><span className="font-semibold text-foreground">0</span> labs</>
+            )}
           </p>
           <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
             <SelectTrigger size="sm" className="h-8 w-[180px]">
@@ -274,10 +303,12 @@ export function ExploreClient() {
         ) : (
           <>
             <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((l) => (
+              {paged.map((l) => (
                 <LabCard key={l.id} lab={l} />
               ))}
             </div>
+
+            {pageCount > 1 && <Pager page={current} pageCount={pageCount} onChange={goToPage} />}
 
             {/* end-of-grid CTA — the canonical placement for "request a custom lab" */}
             <div className="relative mt-10 overflow-hidden rounded-2xl border bg-card px-6 py-8 shadow-md sm:px-10">
@@ -329,5 +360,66 @@ function FilterSelect({
         ))}
       </SelectContent>
     </Select>
+  );
+}
+
+/** Compact page list with ellipses: 1 … 4 5 6 … 16 */
+function pageRange(current: number, total: number): (number | "…")[] {
+  const delta = 1;
+  const pages: number[] = [];
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) pages.push(i);
+  }
+  const out: (number | "…")[] = [];
+  let prev = 0;
+  for (const i of pages) {
+    if (prev) {
+      if (i - prev === 2) out.push(prev + 1);
+      else if (i - prev > 2) out.push("…");
+    }
+    out.push(i);
+    prev = i;
+  }
+  return out;
+}
+
+function Pager({ page, pageCount, onChange }: { page: number; pageCount: number; onChange: (p: number) => void }) {
+  return (
+    <nav aria-label="Pagination" className="mt-10 flex items-center justify-center gap-1">
+      <Button
+        variant="ghost"
+        size="sm"
+        disabled={page <= 1}
+        onClick={() => onChange(page - 1)}
+        className="gap-1"
+      >
+        <ChevronLeftIcon className="size-4" /> Prev
+      </Button>
+      {pageRange(page, pageCount).map((p, i) =>
+        p === "…" ? (
+          <span key={`gap-${i}`} className="px-1.5 text-muted-foreground text-sm">…</span>
+        ) : (
+          <Button
+            key={p}
+            variant={p === page ? "outline" : "ghost"}
+            size="icon-sm"
+            aria-current={p === page ? "page" : undefined}
+            onClick={() => onChange(p)}
+            className={p === page ? "font-semibold" : "text-muted-foreground"}
+          >
+            {p}
+          </Button>
+        )
+      )}
+      <Button
+        variant="ghost"
+        size="sm"
+        disabled={page >= pageCount}
+        onClick={() => onChange(page + 1)}
+        className="gap-1"
+      >
+        Next <ChevronRightIcon className="size-4" />
+      </Button>
+    </nav>
   );
 }
