@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
   ArrowLeftIcon, LayersIcon, SparklesIcon, RefreshCwIcon, Wand2Icon,
-  ShuffleIcon, TagIcon, ChevronRightIcon, BoxesIcon, ArrowRightIcon,
+  ShuffleIcon, TagIcon, ChevronRightIcon, BoxesIcon,
 } from "lucide-react";
 import { getLab, LABS } from "@/lib/labs";
 import { TYPE_META, lifecycleConfig } from "@/lib/state";
@@ -13,7 +13,6 @@ import { StarButton } from "@/components/StarButton";
 import { FyMapping } from "@/components/FyMapping";
 import { RecentRecorder } from "@/components/RecentRecorder";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
@@ -190,18 +189,6 @@ export default async function PublicLabPage({ params }: { params: Promise<{ id: 
                   </span>
                   <span className="font-semibold">{fmtDate(lab.lastRefresh)}</span>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-primary/20 bg-primary/[0.04] shadow-none">
-              <CardContent className="space-y-3">
-                <p className="font-semibold">Need vouchers for this lab?</p>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  Sign in to the partner portal to request access and track fulfillment.
-                </p>
-                <Button asChild className="w-full">
-                  <Link href="/portal">Open partner portal <ArrowRightIcon className="size-4" /></Link>
-                </Button>
               </CardContent>
             </Card>
           </div>
