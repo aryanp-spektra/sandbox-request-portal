@@ -198,7 +198,7 @@ export default function AdminPage() {
         {toast && (
           <motion.div
             initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 40, opacity: 0 }}
-            className="fixed bottom-6 left-1/2 z-[120] flex max-w-[92vw] -translate-x-1/2 items-center gap-3 rounded-[14px] border border-line bg-ink px-4 py-3 text-[13.5px] font-medium text-white shadow-[var(--shadow-lift)]"
+            className="fixed bottom-6 left-1/2 z-[120] flex max-w-[92vw] -translate-x-1/2 items-center gap-3 rounded-[14px] border border-neutral-700 bg-neutral-900 px-4 py-3 text-[13.5px] font-medium text-white shadow-[var(--shadow-lift)]"
           >
             <CheckCircle2 className="h-5 w-5 flex-none text-emerald-400" />
             <span>{toast}</span>

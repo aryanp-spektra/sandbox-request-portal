@@ -11,8 +11,8 @@ export function LoginForm() {
 
   return (
     <AuthShell
-      title="Sign in to the partner portal"
-      subtitle="Catalog, voucher requests and the Sandbox operations cockpit."
+      title="Sign in"
+      subtitle="Requester access for voucher requests and the Sandbox operations cockpit."
       footer={
         <Link href="/" className="inline-flex items-center gap-1.5 hover:text-white">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to the public catalog
