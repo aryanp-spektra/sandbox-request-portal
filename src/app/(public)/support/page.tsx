@@ -6,8 +6,7 @@ export const metadata = {
   description: "Get help with the Microsoft Sandbox catalog, vouchers and delivery.",
 };
 
-// TODO: point this at your standalone CloudLabs support portal URL.
-const SUPPORT_PORTAL_URL = "https://help.cloudlabs.ai";
+const SUPPORT_URL = "https://support.cloudlabs.ai/";
 
 export default function SupportPage() {
   return (
@@ -17,11 +16,11 @@ export default function SupportPage() {
       </span>
       <h1 className="mt-5 font-bold text-3xl tracking-display sm:text-4xl">How can we help?</h1>
       <p className="mt-3 max-w-md text-muted-foreground">
-        Open a ticket, track its status and browse known issues in the CloudLabs support portal.
+        Open a ticket, track its status and browse known issues with the CloudLabs support team.
       </p>
       <Button asChild size="lg" className="mt-7">
-        <a href={SUPPORT_PORTAL_URL} target="_blank" rel="noopener noreferrer">
-          Open the support portal <ExternalLinkIcon className="size-4" />
+        <a href={SUPPORT_URL} target="_blank" rel="noopener noreferrer">
+          Contact support <ExternalLinkIcon className="size-4" />
         </a>
       </Button>
     </main>
