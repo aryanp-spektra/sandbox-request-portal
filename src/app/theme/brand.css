@@ -1,0 +1,24 @@
+/* ============================================================================
+ * BRAND — the ONE file a forked app changes to re-skin.
+ *
+ * CloudLabs identity is indigo. Override --brand here and the whole UI
+ * re-skins: primary buttons, focus ring, sidebar active state, breadcrumb
+ * hover, marketing CTAs.
+ *
+ * Runtime brand override: `buildBrandingCssVars` in app/layout.tsx injects
+ * an inline <style> from `app_settings.branding.primaryColor` that overrides
+ * --primary / --sidebar-primary / --marketing-accent / --chart-1 per
+ * deployment. The values here are the build-time fallbacks.
+ * ============================================================================ */
+
+:root {
+	--brand: #6256ce;
+	--brand-hover: color-mix(in srgb, var(--brand), black 12%);
+	--brand-fg: var(--color-white);
+}
+
+.dark {
+	--brand: #6256ce;
+	--brand-hover: color-mix(in srgb, var(--brand), black 12%);
+	--brand-fg: var(--color-white); /* was var(--color-neutral-950) — dark text is illegible on #6256ce */
+}

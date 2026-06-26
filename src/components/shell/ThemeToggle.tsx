@@ -19,11 +19,13 @@ export function ThemeToggle({ className }: { className?: string }) {
   const [theme, setTheme] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     setMounted(true);
     const isDark = document.documentElement.classList.contains("dark");
     setTheme(isDark ? "dark" : "light");
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const toggle = () => {
     const next: Theme = theme === "dark" ? "light" : "dark";

@@ -3,7 +3,7 @@ import { Zap, Clock, Ban, ArrowRight, Sparkles, Boxes, ShieldCheck, Cpu } from "
 import { catalogStats, featured, FACETS, LABS } from "@/lib/labs";
 import { LabCard } from "@/components/LabCard";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/legacy-button";
 import { BrandLockupWhite } from "@/components/Brand";
 
 const AREA_ICON: Record<string, typeof Cpu> = {

@@ -1,0 +1,21 @@
+/* ============================================================================
+ * TYPOGRAPHY
+ *
+ * Font families come from next/font, exposed via --font-lato on <html>.
+ * Custom font-size scale adds --text-2sm and --text-2xs for compact UI text
+ * (filter inputs, dense tables, etc.).
+ * ============================================================================ */
+
+@theme inline {
+	--font-sans: var(--font-lato), "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+	--font-display: var(--font-lato), "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+	--letter-spacing-display: -0.025em;
+	--letter-spacing-display-tight: -0.04em;
+}
+
+@theme {
+	--text-2sm: 0.8125rem;
+	--text-2sm--line-height: calc(1.075 / 0.8125);
+	--text-2xs: 0.6875rem;
+	--text-2xs--line-height: calc(0.825 / 0.6875);
+}

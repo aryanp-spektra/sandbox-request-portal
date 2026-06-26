@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 
+/**
+ * Legacy pre-revamp button, retained for the authenticated pages (/portal,
+ * /requests, /admin) until they migrate to the shadcn Button in components/ui/button.
+ * New code should import { Button } from "@/components/ui/button".
+ */
 type Variant = "primary" | "ghost" | "outline" | "subtle" | "dark";
 type Size = "sm" | "md" | "lg";
 

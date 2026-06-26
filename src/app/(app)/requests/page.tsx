@@ -9,7 +9,7 @@ import {
 import { usePortal } from "@/lib/store";
 import type { SandboxRequest } from "@/lib/types";
 import { Countdown } from "@/components/ui/Countdown";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/legacy-button";
 import { cn } from "@/lib/cn";
 
 const STATUS_META: Record<SandboxRequest["status"], { label: string; c: string; bg: string; icon: typeof Zap }> = {

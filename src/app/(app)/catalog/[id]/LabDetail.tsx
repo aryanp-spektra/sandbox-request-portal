@@ -12,7 +12,7 @@ import { TYPE_META } from "@/lib/state";
 import { evaluate } from "@/lib/rules";
 import { LifecycleBadge } from "@/components/ui/LifecycleBadge";
 import { StarButton } from "@/components/StarButton";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/legacy-button";
 import { RequestModal } from "@/components/request/RequestModal";
 
 function fmtDate(iso: string | null) {

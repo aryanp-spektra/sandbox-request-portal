@@ -43,28 +43,28 @@ function FyColumn({
   const primary = tone === "primary";
   return (
     <div
-      className={`rounded-[14px] border p-4 ${
-        primary ? "border-primary/30 bg-primary/[0.05]" : "border-line bg-surface"
+      className={`rounded-xl border p-4 ${
+        primary ? "border-primary/30 bg-primary/[0.05]" : "border-border bg-card"
       }`}
     >
       <span
         className={`text-[11px] font-extrabold uppercase tracking-wider ${
-          primary ? "text-primary" : "text-faint"
+          primary ? "text-primary" : "text-muted-foreground"
         }`}
       >
         {year}
       </span>
       {empty ? (
-        <p className="mt-1.5 text-[13px] italic text-faint">New for FY27, no FY26 lineage</p>
+        <p className="mt-1.5 text-[13px] italic text-muted-foreground">New for FY27, no FY26 lineage</p>
       ) : (
         <>
           <div className="mt-2.5">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-faint">Solution Area</p>
-            <p className="mt-0.5 text-[13px] font-semibold text-slate">{area ?? "Unspecified"}</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Solution Area</p>
+            <p className="mt-0.5 text-[13px] font-semibold text-foreground/90">{area ?? "Unspecified"}</p>
           </div>
           <div className="mt-2.5">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-faint">Solution Play</p>
-            <p className="mt-0.5 text-[14.5px] font-bold leading-snug text-ink">{play ?? "Unspecified"}</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Solution Play</p>
+            <p className="mt-0.5 text-[14.5px] font-bold leading-snug text-foreground">{play ?? "Unspecified"}</p>
           </div>
         </>
       )}
