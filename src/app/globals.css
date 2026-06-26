@@ -126,7 +126,13 @@
 .dark .glass { background: rgba(10, 10, 14, 0.72); }
 .dark .skeleton { background: #1c1c22; }
 
-a { color: inherit; text-decoration: none; }
+/* Legacy anchor reset — kept in @layer base so Tailwind utility colors
+ * (e.g. `text-primary-foreground` on Button-asChild links) still win. Without
+ * the layer this unlayered rule beat the utility and forced link-styled
+ * buttons to inherit the dark page text (black-on-purple). */
+@layer base {
+  a { color: inherit; text-decoration: none; }
+}
 ::selection { background: oklch(53.088% 0.17892 282.981 / 0.2); }
 
 /* legacy layout containers */
